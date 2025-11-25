@@ -1,0 +1,5 @@
+{
+  "name": "EchoLoop Back-Translation",
+  "description": "An advanced English learning tool focusing on the back-translation method. It generates Chinese translations from your English source, lets you translate back to English, and provides AI-driven comparison and grammar analysis.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,293 @@
+{
+  "history": [
+    {
+      "id": "1763827921269",
+      "sourceText": "'Can we have a boat， Dad?'Andrew asked.'I mean，not now，of course，but one day—when you've finished paying for the house， perhaps?'\nJohn laughed.His children had been poor for so long.But now he could buy them anything they wanted.",
+      "userBackTranslation": "Can we have a boat, Dad? Andrew asked. I don't mean now,  of cause, it's about the future, when you pay off the house money, don't you? john smiled. his children have been poor for long time. but he can buy anything they wanted now",
+      "score": 70,
+      "summary": "用户基本理解了原文的大意，但在一些词汇选择、时态使用和表达细节上未能完全捕捉原文的精髓，尤其是在语气和自然度方面有待提高。",
+      "timestamp": 1763827921269
+    },
+    {
+      "id": "1763780932108",
+      "sourceText": "He went out of the door， and after half an hour he had for-gotten the conversation.\nHe was a very busy man now.All day he had to test differ-ent types of paints，and make sure they were safe.He was also busy buying a big， comfortable house for his family， with a large field beside it，where Christine could keep a horse.The house was half a kilometre from the sea，and its gardens went down to the river.There was an empty boathouse there.",
+      "userBackTranslation": "he walked out the door, and after half an hour he had forgotten the talk. he was a busy man now and had to test safety with different sorts of paints, and needed to buy a huge comfortable house for family. Christine could feed horse there. this house is half a kilometer from the sea, the garden went down to river, there was a spare boat hut",
+      "score": 65,
+      "summary": "用户的回译基本传达了原文的主要情节和信息，但在语法准确性、词汇选择、句式结构和细节还原方面存在一些可以改进的地方。",
+      "timestamp": 1763780932108
+    },
+    {
+      "id": "1763780374331",
+      "sourceText": "He went out of the door， and after half an hour he had for-gotten the conversation.\nHe was a very busy man now.All day he had to test differ-ent types of paints，and make sure they were safe.He was also busy buying a big， comfortable house for his family， with a large field beside it，where Christine could keep a horse.The house was half a kilometre from the sea，and its gardens went down to the river.There was an empty boathouse there.",
+      "userBackTranslation": "he walked out the door, and threw the talk away behind him. he is a busy man now, have to test safety with many sorts of paints, and need to buy a huge comfortable house for family. Cristine can grow horse there. this house is half a kilometer from sea, the garden is running to river, there has a spare boat hut",
+      "score": 65,
+      "summary": "用户的回译基本传达了原文的主要情节和信息，但在语法准确性、用词精确度和句式结构上存在较多可以改进的地方。",
+      "timestamp": 1763780374331
+    },
+    {
+      "id": "1763744268786",
+      "sourceText": "'They won't，doctor，'said John.'All the drinking water comes out of the river five kilometres upstream，you know that.Who's going to drink salt water from the river mouth，for heaven's sake?Chemists from London have checked it，too，you know，and our company lawyers know all about it.So it's not dangerous and we're not doing anything wrong.Don't worry about it.'",
+      "userBackTranslation": "They won't, doctor. said John. All of the drinking water had been picked at the upriver 5 kilometers away, you know that. Who God damn it will drink the salt water at the river mouth. The chemist came from London had checked it, and our company's lawyer had known it very well. So it's not dangerous, and we didn't do any bad things. Be relaxed.",
+      "score": 68,
+      "summary": "用户的回译基本传达了原文的核心信息，但在语法（特别是动词时态、名词单复数和标点）、词汇选择和表达习惯方面存在多处需要改进的地方，导致译文不够地道和流畅。尤其是在语气和措辞的选择上，有时与原文的细微差别有所偏离。",
+      "timestamp": 1763744268786
+    },
+    {
+      "id": "1763743248861",
+      "sourceText": "'They won't，doctor，'said John.'All the drinking water comes out of the river five kilometres upstream，you know that.Who's going to drink salt water from the river mouth，for heaven's sake?Chemists from London have checked it，too，you know，and our company lawyers know all about it.So it's not dangerous and we're not doing anything wrong.Don't worry about it.'",
+      "userBackTranslation": "They won't, doctor. said John. All of the drinking water had been picked at the upriver 5 kilometers away, you know that. Who God damn it will drink the salt water at the river mouth. The chemist came from London had checked it, and our company's lawyer had known it very well. So it's not dangerous, and we didn't do any bad things. Be relaxed.",
+      "score": 65,
+      "summary": "用户的基本翻译传达了原文的主要信息和论点，但在语法准确性、词汇选择和语气一致性上存在一些需要改进的地方。",
+      "timestamp": 1763743248861
+    },
+    {
+      "id": "1763742043736",
+      "sourceText": "'They won't，doctor，'said John.'All the drinking water comes out of the river five kilometres upstream，you know that.Who's going to drink salt water from the river mouth，for heaven's sake?Chemists from London have checked it，too，you know，and our company lawyers know all about it.So it's not dangerous and we're not doing anything wrong.Don't worry about it.'",
+      "userBackTranslation": "They won't, doctor. said John. All of the drinking water had been picked at the upriver 5 kilometers away, you know that. Who God damn it will drink the salt water at the river mouth. The chemist came from London had checked it, and our company's lawyer had known it very well. So it's not dangerous, and we didn't do any bad things. Be relaxed.",
+      "score": 70,
+      "summary": "用户的回译基本传达了原文的意思，但在语法结构、时态使用和部分词汇的精确性上存在一些错误，导致表达不够流畅和地道。",
+      "timestamp": 1763742043736
+    },
+    {
+      "id": "1763740251845",
+      "sourceText": "'Where do these waste products go，when the factory has finished with them?Into the river?'\n'Well，yes，of course，'said John.'But it's all right，you know，'he added quickly.'It's very carefully checked，all the time.It's a big river，and we only produce a few hundred litres of the waste products a day.And we're only two kilo-metres from the sea，after all.'\n'Good，'said the doctor.'I wouldn't want anyone to drink those waste products，that's all.'",
+      "userBackTranslation": "Where were these waste products going to After the factory dealt with them? Did they pour in the river? Yes, of course. Said John. But it's okay, you know. He added in a hurry. We were looking over them very carefully. This is a huge river; we only produce waste products hundreds litre. We are far from the sea about two kilometers after all. Okay. Said the doctor. I just didn't want anyone to drink those waste products. That's all.",
+      "score": 68,
+      "summary": "用户的回译基本传达了原文的核心信息，但在语法准确性、词汇选择的精准度以及句式风格的还原上存在多处不足。特别是时态、语态、量词使用和口语化表达方面，与原文存在明显差异，导致部分语句听起来不够自然或略显生硬。",
+      "timestamp": 1763740251845
+    },
+    {
+      "id": "1763733549542",
+      "sourceText": "'Yes，I know.'John smiled at him.'But don't worry，Doctor，we're very careful with them in the factory.No one can go near them without special safe clothing.You can come and see if you like.'\n'I'm very pleased to hear it，'said the doctor.He gave the piece of paper to John.\n'Thank you，'said John.He went towards the door.\n'Mr Duncan?'\n'Yes?'John looked back，surprised.",
+      "userBackTranslation": "Yes, I know. John smiled at him. But don't worry, doctor, we dealt with them very carefully in our factory. no one could close them without special coat. you can come to see if you want to. it is very glad to hear that. the doctor said. he handed that note to John. Thank you, John said. he went toward the door. Mr. Duncan? Em? John looked back in surprise",
+      "score": 65,
+      "summary": "用户的回译传达了原文的核心内容和事件顺序，但在语法、词汇选择、惯用表达和文体方面存在较多需要改进的地方，使得译文听起来不够自然和地道。尤其是在动词时态、介词搭配、词语准确性和对话引述的格式上。",
+      "timestamp": 1763733549542
+    },
+    {
+      "id": "1763708740562",
+      "sourceText": "John Duncan started work on Monday，and Mary Carter showed him round the factory.The most important thing that the company produced was a new paint for cars.It was a very strong，hard paint，which nothing could damage.Mary and her chemists had developed it，and they had tested it all over the world.Neither acid nor salt water could damage it，and cars came back from both the Arctic and the Sahara looking like new.",
+      "userBackTranslation": "John Duncan started his work on Monday. Mary Carter took him to visit the factory. The most important produce of the factory was a new car paint. It's a strong and solid paint That was damaged by nothing. Marie and her chemists made it, and tested it over the world. It was included acid and Salt Water, Any cars painted it on And came back through the desert Sahara just as a new one.",
+      "score": 62,
+      "summary": "用户的回译基本传达了原文的核心信息，但在词汇选择、时态一致性、句式结构和地道表达方面存在一些需要改进的地方。特别是在使用更自然和准确的英语表达上，用户可以进一步提升。",
+      "timestamp": 1763708740562
+    },
+    {
+      "id": "1763708632447",
+      "sourceText": "The company was beginning to make a lot of money from this paint，and it had brought four hundred new jobs to the town.\nOne day，when he was working with the paint，John spilt some of the waste products on his leg.He cleaned it off quickly，but it left a red，painful place on his skin，which would not go away.It kept him awake at night.He told his doctor what he had spilt on it，and the doctor looked at him strangely.",
+      "userBackTranslation": "The company started making lots of money on this paint, and brought 400 new jobs in this town.\nOne day when John was using the paint, Some of it sprayed on his leg. He cleaned it quickly, But the paint left a red, hurt place on his skin and never fade. It make him couldn't sleep. He tell his doctor what It is sprayed on his leg. The doctor looked at him strangely.",
+      "score": 65,
+      "summary": "您的回译稿件清晰地传达了原文的主要信息，但在语法、词汇选择和表达习惯上存在一些提升空间。特别是动词时态和介词的使用需要更准确，部分词语的选用也与原文的细微含义有所出入。",
+      "timestamp": 1763708632447
+    },
+    {
+      "id": "1763708413687",
+      "sourceText": "'So these chemicals had something to do with the new paint，did they?'the doctor asked carefully.\n'Yes，I told you.It was a bottle of the waste products.I was looking at them in my office.'\n'I see.'the doctor looked out of the window thoughtfully.His fingers moved quietly on his desk.'And your company is producing a lot of these waste products now，I suppose.'",
+      "userBackTranslation": "The doctor asked carefully: So these chemical products relationship with the new paints, right? \nYes, as I said, That was a waste product. I was watching them at that time.\nI understand. The doctor looked out of the window and Thought. He moved his finger lightly on the table. I think your company was making a lot of these waste products.",
+      "score": 68,
+      "summary": "用户的回译大致传达了原文的意思，但在许多细节上存在不足。问句的结构、动词和副词的选择、以及一些固定搭配的使用都不够地道和准确。时态和单复数也有错误，导致表达不够自然和精确。",
+      "timestamp": 1763708413687
+    },
+    {
+      "id": "1763708203228",
+      "sourceText": "'Yes，of course.'John was in a hurry. He had to meet someone important in ten minutes.'Look，can you give me something to put on it，or not?'\n'Oh yes.'the doctor began to write something on a piece of paper.'Put this on night and morning，and the pain will go in a day or two.But I'm afraid the skin there will stay red for a year or two.They're nasty chemicals，Mr Duncan，you know.'",
+      "userBackTranslation": "Yes, of course. John was in hurry. He was going to meet an important man in 10 minutes. I suppose you can give me something to put on it. Yes, of course. The doctor started to write something on a note. Here you are, Use it day and night in a time. The pain will go away in one or two days. But that piece of skin  will be red for one or two years. They are very strong chemicals, Mr. Duncan, you know that.",
+      "score": 68,
+      "summary": "用户准确把握了原文的主旨和情节，但在词汇选择、语法结构和习语表达上，与原文的自然性和细微之处有所偏差。用户有时未能体现出说话者的语气、紧迫感或礼貌的表达。",
+      "timestamp": 1763708203228
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "17638280974170.5007867739943928",
+      "original": "his children have been poor for long time.",
+      "better": "His children had been poor for so long.",
+      "reason": "原文使用过去完成时 'had been'，表示在过去某个时间点（即约翰能买东西的时候）之前，他们一直处于贫困状态。用户翻译为现在完成时 'have been'，改变了时态，使时间线不连贯。 'for long time' 表达不自然，应为 'for a long time' 或更地道的 'for so long'，后者强调了时间的长度。",
+      "context": "His children had been poor for so long.",
+      "meaning": "他的孩子们已经贫穷了很长时间了。",
+      "timestamp": 1763828097417
+    },
+    {
+      "id": "17638280518820.15063021800787557",
+      "original": "I don't mean now, of cause, it's about the future, when you pay off the house money, don't you?",
+      "better": "I mean, not now, of course, but one day—when you've finished paying for the house, perhaps?",
+      "reason": "'of cause' 是拼写错误，应为 'of course'。 'I don't mean now' 虽然语法正确，但原文 'I mean, not now' 更自然地引入了一个澄清。 'it's about the future' 不如原文的 'one day' 简洁且富有诗意。 'pay off the house money' 表达不如 'finished paying for the house' 地道自然，且原文使用现在完成时 'you've finished' 更强调还清房贷这一动作的完成。 'don't you?' 将原文孩子试探性的 'perhaps?' 改变成了寻求确认的反问，失去了原文的语气和委婉。",
+      "context": "'I mean，not now，of course，but one day—when you've finished paying for the house， perhaps?'",
+      "meaning": "“我的意思是，当然不是现在，而是在将来有一天——也许是你还清了房贷的时候？”",
+      "timestamp": 1763828051882
+    },
+    {
+      "id": "17637812847980.6218813257799403",
+      "original": "this house is half a kilometer from the sea, the garden went down to river, there was a spare boat hut",
+      "better": "The house was half a kilometre from the sea, and its gardens went down to the river. There was an empty boathouse there.",
+      "reason": "时态不一致（'this house is' 应为过去时 'The house was'）。'spare boat hut' 意为‘备用的船屋’，而原文 'empty boathouse' 指的是‘空的、未被使用的船屋’，含义有细微差别。",
+      "context": "The house was half a kilometre from the sea，and its gardens went down to the river.There was an empty boathouse there.",
+      "meaning": "房子离大海有半公里远，它的花园一直延伸到河边。那里有一个空的船屋。",
+      "timestamp": 1763781284798
+    },
+    {
+      "id": "17637812703470.6755013252437134",
+      "original": "and needed to buy a huge comfortable house for family. Christine could feed horse there.",
+      "better": "He was also busy buying a big, comfortable house for his family, with a large field beside it, where Christine could keep a horse.",
+      "reason": "用户版本将原文中描述房子附带田野的定语从句简化并拆分成两个独立的短句，丢失了‘房子旁边有田野’这一重要的空间逻辑关系。'keep a horse'（养马）比 'feed horse there'（在那里喂马）更能准确表达拥有并照料马匹的长期行为。",
+      "context": "He was also busy buying a big， comfortable house for his family， with a large field beside it，where Christine could keep a horse.",
+      "meaning": "他还忙着为家人买一栋又大又舒适的房子，旁边有一大片田野，克里斯汀可以在那里养一匹马。",
+      "timestamp": 1763781270347
+    },
+    {
+      "id": "17637810393400.6006740336425989",
+      "original": "he was a busy man now and had to test safety with different sorts of paints,",
+      "better": "He was a very busy man now. All day he had to test different types of paints and make sure they were safe.",
+      "reason": "用户版本将两个句子合并，并改变了‘确保安全’的语法结构（test safety with...），导致含义模糊。原文的句式更清晰。",
+      "context": "He was a very busy man now.All day he had to test differ-ent types of paints，and make sure they were safe.",
+      "meaning": "他现在是个大忙人。整天他都要测试不同类型的油漆，并确保它们是安全的。",
+      "timestamp": 1763781039340
+    },
+    {
+      "id": "17637810154970.9023681364973686",
+      "original": "he walked out the door, and after half an hour he had forgotten the talk.",
+      "better": "He went out of the door, and after half an hour he had forgotten the conversation.",
+      "reason": "原文使用 'went out of the door' 和 'conversation' 是更标准的表达。'talk' 作为名词在指代正式谈话时不如 'conversation' 准确。",
+      "context": "He went out of the door， and after half an hour he had for-gotten the conversation.",
+      "meaning": "他走出门，半小时后就把这次谈话忘了。",
+      "timestamp": 1763781015497
+    },
+    {
+      "id": "17637422926300.48868699230115986",
+      "original": "So it's not dangerous, and we didn't do any bad things.",
+      "better": "So it's not dangerous and we're not doing anything wrong.",
+      "reason": "'didn't do any bad things'（没做过坏事）用词不够正式和精确，原文的'not doing anything wrong'（没做任何错事）更符合商业辩护的语境。时态应使用现在进行时，强调当前持续的状态。",
+      "context": "So it's not dangerous and we're not doing anything wrong.",
+      "meaning": "所以这并不危险，我们也没有做任何错事。",
+      "timestamp": 1763742292630
+    },
+    {
+      "id": "17637422396330.2745298673612311",
+      "original": "Who God damn it will drink the salt water at the river mouth.",
+      "better": "Who's going to drink salt water from the river mouth, for heaven's sake?",
+      "reason": "'God damn it'（该死）语气过于强烈和粗鲁，原文的'for heaven's sake'（看在老天份上）是一种更常见的、表示强调的感叹语。",
+      "context": "Who's going to drink salt water from the river mouth，for heaven's sake?",
+      "meaning": "看在老天的份上，谁会去喝河口的咸水呢？",
+      "timestamp": 1763742239633
+    },
+    {
+      "id": "17637422338900.6549140212668034",
+      "original": "The chemist came from London had checked it, and our company's lawyer had known it very well.",
+      "better": "Chemists from London have checked it, too, you know, and our company lawyers know all about it.",
+      "reason": "语法结构错误，'The chemist came from London had checked it' 是不正确的从句结构。时态应为现在完成时（have checked）和一般现在时（know），表示已完成并对现在有影响的事实。",
+      "context": "Chemists from London have checked it，too，you know，and our company lawyers know all about it.",
+      "meaning": "伦敦来的化学家也检查过了，你知道的，而且我们公司的律师对这一切都了如指掌。",
+      "timestamp": 1763742233890
+    },
+    {
+      "id": "17637420898580.5659829134501357",
+      "original": "All of the drinking water had been picked at the upriver 5 kilometers away, you know that.",
+      "better": "All the drinking water comes from the river five kilometres upstream, you know that.",
+      "reason": "'had been picked'（被挑选）用词不准确，应为'comes from'（来自）。'at the upriver'介词使用错误，应为'upstream'（上游）。时态应为一般现在时，表示客观事实。",
+      "context": "All the drinking water comes out of the river five kilometres upstream，you know that.",
+      "meaning": "所有的饮用水都来自五公里外的上游河水，这你是知道的。",
+      "timestamp": 1763742089858
+    },
+    {
+      "id": "17637406354050.047704025731405864",
+      "original": "Yes, of course. Said John. But it's okay, you know. He added in a hurry. We were looking over them very carefully. This is a huge river; we only produce waste products hundreds litre. We are far from the sea about two kilometers after all.",
+      "better": "'Well, yes, of course,' said John. 'But it's all right, you know,' he added quickly. 'It's very carefully checked, all the time. It's a big river, and we only produce a few hundred litres of the waste products a day. And we're only two kilo-metres from the sea, after all.'",
+      "reason": "此句包含多处改进点：1. 语气词“Well”的缺失，影响口语自然度。2. “all right”比“okay”更贴近原文且稍显正式。3. “quickly”作为副词比“in a hurry”更简洁地表达动作。4. 关键的语态和时态错误：“We were looking over them very carefully”应为被动语态且是持续状态的描述“It's very carefully checked, all the time”。5. 量词和名词复数形式的错误：“waste products hundreds litre”应为“a few hundred litres of the waste products”。6. 表达方式不够简洁和准确：“We are far from the sea about two kilometers”不如原文“we're only two kilo-metres from the sea”直接地表达“距离很近”的含义。",
+      "context": "'Well, yes, of course,'said John.'But it's all right, you know,'he added quickly.'It's very carefully checked, all the time.It's a big river, and we only produce a few hundred litres of the waste products a day.And we're only two kilo-metres from the sea, after all.'",
+      "meaning": "“‘嗯，是的，当然，’约翰说。‘不过没关系，你知道，’他赶紧补充道。‘我们一直在非常仔细地检查。这是一条大河，我们每天只生产几百升废弃物。而且，我们毕竟离大海只有两公里远。’",
+      "timestamp": 1763740635405
+    },
+    {
+      "id": "17637405839130.4813480731675803",
+      "original": "Where were these waste products going to After the factory dealt with them? Did they pour in the river?",
+      "better": "'Where do these waste products go, when the factory has finished with them? Into the river?'",
+      "reason": "用户的翻译在时态、动词选择和疑问句的表达方式上与原文存在差异。原文使用一般现在时询问废物的常见去向（'go'），用现在完成时描述完成后的状态（'has finished with'），并以简洁的介词短语（'Into the river?'）提出反问，更具口语化和暗示性。用户的翻译使用了过去进行时，动词'dealt with'和'pour'在语境上不如原文精准，且疑问句表达过于冗长，失去了原文的简洁和暗示性。",
+      "context": "'Where do these waste products go, when the factory has finished with them?Into the river?'",
+      "meaning": "“当工厂处理完这些废弃物后，它们会去哪里？流入河里吗？”",
+      "timestamp": 1763740583913
+    },
+    {
+      "id": "17637337138620.9565923652399084",
+      "original": "But don't worry, doctor, we dealt with them very carefully in our factory. no one could close them without special coat. you can come to see if you want to.",
+      "better": "'But don't worry, Doctor, we're very careful with them in the factory. No one can go near them without special safe clothing. You can come and see if you like.'",
+      "reason": "1. 称谓“Doctor”应大写。2. “we're very careful”表示持续的谨慎状态，比“we dealt with them very carefully”更符合语境。3. “in the factory”比“in our factory”更简洁自然，指上下文明确的特定工厂。4. 句首的“No one”应大写。5. “go near them”是正确的表达，意为“靠近它们”，而“close them”不符合原文意思。6. “can”表示普遍规则或能力，而“could”偏向过去或假设，原文是当前的规定，应使用“can”。7. “safe clothing”比“coat”更准确地指代防护服。8. 句首的“You”应大写。9. “come and see”是更地道和常见的表达方式，表示“过来看看”。10. “if you like”与“if you want to”意思相近，但原文用了“if you like”，更符合原文语气。",
+      "context": "'But don't worry, Doctor, we're very careful with them in the factory.No one can go near them without special safe clothing.You can come and see if you like.'",
+      "meaning": "“但是别担心，医生，我们在工厂里对它们非常小心。没有特别的安全服装，任何人都不能靠近它们。如果你愿意，可以过来看看。”",
+      "timestamp": 1763733713862
+    },
+    {
+      "id": "17637088530700.8284407358609944",
+      "original": "It was included acid and Salt Water, Any cars painted it on And came back through the desert Sahara just as a new one.",
+      "better": "Neither acid nor salt water could damage it, and cars came back from both the Arctic and the Sahara looking like new.",
+      "reason": "“It was included acid and Salt Water”表达不准确，未能传达“酸和盐水都不能损坏它”的原意，且语法有误，应使用“Neither...nor”结构。第二部分，“Any cars painted it on”的表达不自然，且遗漏了关键地点“Arctic”。“through the desert Sahara”中的“the desert”是多余的。最后，“just as a new one”的表达不地道，应为“looking like new”或“just like new”。",
+      "context": "Neither acid nor salt water could damage it，and cars came back from both the Arctic and the Sahara looking like new.",
+      "meaning": "酸和盐水都不能损坏它，汽车从北极和撒哈拉沙漠回来时都完好如初。",
+      "timestamp": 1763708853070
+    },
+    {
+      "id": "17637088478860.60408664943624",
+      "original": "It's a strong and solid paint That was damaged by nothing.",
+      "better": "It was a very strong, hard paint which nothing could damage.",
+      "reason": "时态应与前文保持一致，使用过去时“was”。“hard”比“solid”更贴切地描述油漆的坚硬特性。同时，“which nothing could damage”是更简洁、地道的表达，强调了油漆的抗损能力，且句中的“That”不应大写。",
+      "context": "It was a very strong，hard paint，which nothing could damage.",
+      "meaning": "它是一种非常坚固、坚硬的油漆，没有任何东西能损坏它。",
+      "timestamp": 1763708847886
+    },
+    {
+      "id": "17637086938370.8560906600217661",
+      "original": "He tell his doctor what It is sprayed on his leg. The doctor looked at him strangely.",
+      "better": "He told his doctor what he had spilt on it, and the doctor looked at him strangely.",
+      "reason": "动词时态错误，应使用过去时“told”；“what he had spilt on it”使用过去完成时，正确表达了洒出动作发生在告诉医生之前。用户使用的“It is sprayed”动词时态和语态均不正确；“spilt”更符合原文语境，指“洒出”；“It”在句中不应大写；原文使用连词“and”连接两个分句，使句意更连贯。",
+      "context": "He told his doctor what he had spilt on it，and the doctor looked at him strangely.",
+      "meaning": "他告诉医生他洒了什么东西在腿上，医生奇怪地看着他。",
+      "timestamp": 1763708693837
+    },
+    {
+      "id": "17637086460680.4633277272586225",
+      "original": "He cleaned it quickly, But the paint left a red, hurt place on his skin and never fade.",
+      "better": "He cleaned it off quickly, but it left a red, painful place on his skin, which would not go away.",
+      "reason": "“cleaned it off”是更地道的表达，表示“清除掉”；“painful place”指“疼痛的地方”，比“hurt place”更自然、准确地描述皮肤上的症状；“which would not go away”强调伤口或痕迹没有消失，比“never fade”更符合语境，后者多用于描述颜色或亮度；连词“but”在句中不应大写。",
+      "context": "He cleaned it off quickly，but it left a red，painful place on his skin，which would not go away.",
+      "meaning": "他很快把它擦掉了，但它在他的皮肤上留下了一个红色、疼痛的印记，而且一直没有消失。",
+      "timestamp": 1763708646068
+    },
+    {
+      "id": "17637086423720.8759043680623197",
+      "original": "One day when John was using the paint, Some of it sprayed on his leg.",
+      "better": "One day, when he was working with the paint, John spilt some of the waste products on his leg.",
+      "reason": "“spilt”（洒出）更符合废弃物意外掉落的情境，而“sprayed”（喷洒）通常指主动或机械性的喷射；“waste products”更准确地指出了洒出的具体物质，而非笼统的“Some of it”；句子中间的“Some”不应大写。",
+      "context": "One day，when he was working with the paint，John spilt some of the waste products on his leg.",
+      "meaning": "一天，当他使用这种涂料时，约翰不小心把一些废弃物洒在了他的腿上。",
+      "timestamp": 1763708642372
+    },
+    {
+      "id": "17637082491960.7244319893908948",
+      "original": "Here you are, Use it day and night in a time. The pain will go away in one or two days.",
+      "better": "Put this on night and morning, and the pain will go in a day or two.",
+      "reason": "原句“Put this on night and morning”是标准的医嘱表达，指早晚各一次。“Use it day and night”表示全天候使用，且“in a time”表达不自然。用户还额外添加了“Here you are”。",
+      "context": "Put this on night and morning，and the pain will go in a day or two.",
+      "meaning": "晚上和早上涂抹这个，疼痛会在一两天内消失。",
+      "timestamp": 1763708249196
+    },
+    {
+      "id": "17637082368290.302213397775539",
+      "original": "I suppose you can give me something to put on it.",
+      "better": "Look, can you give me something to put on it, or not?",
+      "reason": "用户版本失去了原句中“Look”和“or not?”所表达的急切、不耐烦和质问的语气。原句直接而有力地表达了约翰的紧迫感。",
+      "context": "'Look，can you give me something to put on it，or not?'",
+      "meaning": "“听着，你能不能给我一些涂抹的东西，到底给不给？”",
+      "timestamp": 1763708236829
+    },
+    {
+      "id": "17637082283740.06017670871579983",
+      "original": "He was going to meet an important man in 10 minutes.",
+      "better": "He had to meet someone important in ten minutes.",
+      "reason": "原句中的“had to”强调了必须履行的义务或紧急性，比“was going to”的计划性更强。“someone important”保持了人物身份的通用性，而“an important man”则限定了性别。",
+      "context": "He had to meet someone important in ten minutes.",
+      "meaning": "他必须在十分钟内去见一位重要人物。",
+      "timestamp": 1763708228374
+    }
+  ],
+  "exportDate": "2025-11-22T16:15:53.971Z",
+  "version": "1.0"
+}
