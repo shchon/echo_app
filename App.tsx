@@ -304,14 +304,11 @@ const App: React.FC = () => {
   // -------------------------------------------------------------------------
 
   const renderHeader = () => (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4 mb-8 shadow-sm transition-all duration-300">
-      <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 py-3 sm:py-4 mb-6 sm:mb-8 shadow-sm transition-all duration-300">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-lg shadow-brand-100">
-            <RotateCcw className="text-white" size={24} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">EchoLoop</h1>
+          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-lg shadow-brand-100">
+            <RotateCcw className="text-white" size={22} />
           </div>
         </div>
 
@@ -979,7 +976,7 @@ const App: React.FC = () => {
          webdavConfig={aiConfig.webdav}
       />
       
-      <main className="px-6 pb-12">
+      <main className="px-4 sm:px-6 pb-20 sm:pb-12">
         <StepIndicator currentStep={step} />
         
         {error && (
