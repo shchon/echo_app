@@ -341,16 +341,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             {/* Front (Question) */}
             {!isFlipped && (
               <div className="absolute inset-0 bg-white rounded-3xl shadow-xl border-2 border-gray-100 flex flex-col items-center justify-center p-6 sm:p-10 text-center hover:border-brand-200 transition-colors overflow-y-auto">
-                 {/* Native meaning emphasized larger */}
+                 {/* Native meaning same size as English */}
                  {currentCard.meaning && (
-                    <p className="text-2xl text-gray-800 font-serif mb-2 sm:mb-3 leading-relaxed">
+                    <p className="text-base text-gray-800 font-serif mb-2 sm:mb-3 leading-relaxed">
                       {currentCard.meaning}
                     </p>
                  )}
 
-                 {/* Original English a bit smaller */}
+                 {/* Original English */}
                  <p className="text-base text-gray-700 font-serif mb-2 sm:mb-3 underline decoration-red-400 decoration-wavy decoration-2 underline-offset-4 leading-relaxed">
-                   {currentCard.original}
+                  {currentCard.original}
                  </p>
                  
                  {/* User input area */}
