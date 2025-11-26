@@ -386,7 +386,7 @@ const App: React.FC = () => {
                   ? 'bg-white text-brand-700 shadow-sm ring-1 ring-black/5' 
                   : 'text-gray-500 hover:text-gray-700'}`}
             >
-              <Cpu size={16} /> Preset Models
+              <Cpu size={16} /> M
             </button>
             <button 
                onClick={() => {
@@ -404,7 +404,7 @@ const App: React.FC = () => {
                   ? 'bg-white text-brand-700 shadow-sm ring-1 ring-black/5' 
                   : 'text-gray-500 hover:text-gray-700'}`}
             >
-              <Server size={16} /> Custom Connection
+              <Server size={16} /> C
             </button>
             <button 
                onClick={() => setSettingsTab('prompts')}
@@ -413,7 +413,7 @@ const App: React.FC = () => {
                   ? 'bg-white text-brand-700 shadow-sm ring-1 ring-black/5' 
                   : 'text-gray-500 hover:text-gray-700'}`}
             >
-              <FileEdit size={16} /> Prompts
+              <FileEdit size={16} /> P
             </button>
             <button 
                onClick={() => setSettingsTab('sync')}
@@ -422,7 +422,7 @@ const App: React.FC = () => {
                   ? 'bg-white text-brand-700 shadow-sm ring-1 ring-black/5' 
                   : 'text-gray-500 hover:text-gray-700'}`}
             >
-              <LinkIcon size={16} /> Sync
+              <LinkIcon size={16} /> S
             </button>
           </div>
           
@@ -766,11 +766,11 @@ const App: React.FC = () => {
           <Languages size={120} className="text-indigo-500" />
         </div>
         <div className="relative z-10">
-          <h3 className="text-indigo-900 font-semibold text-sm mb-3 uppercase tracking-wider flex items-center gap-2">
+          <h3 className="text-indigo-900 font-semibold text-xs mb-3 uppercase tracking-wider flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
             Translate back to English
           </h3>
-          <p className="text-2xl font-serif text-indigo-950 leading-relaxed">
+          <p className="text-xs sm:text-sm font-serif text-indigo-950 leading-relaxed">
             {translatedText}
           </p>
         </div>
@@ -817,49 +817,8 @@ const App: React.FC = () => {
       <div className="max-w-5xl mx-auto animate-fade-in pb-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div className="lg:col-span-2">
-            {/* Score Header */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 mb-8 flex flex-col md:flex-row gap-8 items-center">
-            <div className="relative flex-shrink-0">
-                <div className="w-32 h-32 rounded-full bg-brand-50 flex items-center justify-center border-4 border-brand-100">
-                <span className="text-4xl font-bold text-brand-700">{analysis.score}</span>
-                </div>
-                {analysis.score >= 90 && (
-                <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full shadow-sm border border-yellow-200">
-                    EXCELLENT
-                </div>
-                )}
-            </div>
-            <div className="flex-grow text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Results Summary</h2>
-                <p className="text-gray-600 leading-relaxed mb-4">{analysis.summary}</p>
-                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                {analysis.strengths.map((str, i) => (
-                    <span key={i} className="bg-green-50 text-green-700 px-3 py-1 rounded-lg text-sm font-medium flex items-center gap-1 border border-green-100">
-                    <Check size={14} /> {str}
-                    </span>
-                ))}
-                </div>
-            </div>
-            </div>
-
-            {/* Comparison Columns */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-2xl p-6 border border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Original English</h4>
-                <div className="prose prose-gray">
-                <p className="font-serif text-gray-800 leading-relaxed">{sourceText}</p>
-                </div>
-            </div>
-            <div className="bg-white rounded-2xl p-6 border border-gray-200 relative">
-                <h4 className="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-4">Your Version</h4>
-                <div className="prose prose-gray">
-                <p className="font-serif text-gray-800 leading-relaxed">{backTranslation}</p>
-                </div>
-            </div>
-            </div>
-
-            {/* Detailed Improvements */}
-            <div className="space-y-6 mb-12">
+            {/* Detailed Improvements - first section */}
+            <div className="space-y-6 mb-8">
                 <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <AlertCircle className="text-orange-500" />
                     Key Improvements
@@ -924,22 +883,63 @@ const App: React.FC = () => {
                 )}
             </div>
 
+            {/* Score Summary */}
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 mb-8 flex flex-col md:flex-row gap-8 items-center">
+              <div className="relative flex-shrink-0">
+                <div className="w-32 h-32 rounded-full bg-brand-50 flex items-center justify-center border-4 border-brand-100">
+                  <span className="text-4xl font-bold text-brand-700">{analysis.score}</span>
+                </div>
+                {analysis.score >= 90 && (
+                  <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full shadow-sm border border-yellow-200">
+                    EXCELLENT
+                  </div>
+                )}
+              </div>
+              <div className="flex-grow text-center md:text-left">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Results Summary</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">{analysis.summary}</p>
+                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                  {analysis.strengths.map((str, i) => (
+                    <span key={i} className="bg-green-50 text-green-700 px-3 py-1 rounded-lg text-sm font-medium flex items-center gap-1 border border-green-100">
+                      <Check size={14} /> {str}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Comparison Columns */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Original English</h4>
+                <div className="prose prose-gray">
+                  <p className="font-serif text-gray-800 leading-relaxed">{sourceText}</p>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl p-6 border border-gray-200 relative">
+                <h4 className="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-4">Your Version</h4>
+                <div className="prose prose-gray">
+                  <p className="font-serif text-gray-800 leading-relaxed">{backTranslation}</p>
+                </div>
+              </div>
+            </div>
+
             {/* Actions */}
             <div className="flex justify-center gap-4 mt-12">
-                <button 
-                    onClick={handleTryAgainSameText}
-                    className="px-6 py-3 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-xl transition-colors flex items-center gap-2"
-                >
-                    <RotateCcw size={18} />
-                    Retry Same Text
-                </button>
-                <button 
-                    onClick={handleReset}
-                    className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl transition-colors flex items-center gap-2 shadow-lg shadow-brand-100"
-                >
-                    New Practice
-                    <ChevronRight size={18} />
-                </button>
+              <button 
+                onClick={handleTryAgainSameText}
+                className="px-6 py-3 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-xl transition-colors flex items-center gap-2"
+              >
+                <RotateCcw size={18} />
+                Retry Same Text
+              </button>
+              <button 
+                onClick={handleReset}
+                className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl transition-colors flex items-center gap-2 shadow-lg shadow-brand-100"
+              >
+                New Practice
+                <ChevronRight size={18} />
+              </button>
             </div>
         </div>
         

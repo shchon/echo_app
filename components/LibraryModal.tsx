@@ -24,13 +24,14 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   onImportData,
   webdavConfig
 }) => {
-  const [activeTab, setActiveTab] = useState<'history' | 'vocabulary'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'vocabulary'>('vocabulary');
   const [searchTerm, setSearchTerm] = useState('');
   
   // Review Mode State
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [reviewIndex, setReviewIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [reviewInput, setReviewInput] = useState('');
 
   // File Input Ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,21 +90,25 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
     setIsReviewMode(true);
     setReviewIndex(0);
     setIsFlipped(false);
+    setReviewInput('');
   };
 
   const exitReview = () => {
     setIsReviewMode(false);
     setIsFlipped(false);
+    setReviewInput('');
   };
 
   const nextCard = () => {
     setIsFlipped(false);
     setReviewIndex((prev) => (prev + 1) % filteredVocabulary.length);
+    setReviewInput('');
   };
 
   const prevCard = () => {
     setIsFlipped(false);
     setReviewIndex((prev) => (prev - 1 + filteredVocabulary.length) % filteredVocabulary.length);
+    setReviewInput('');
   };
 
   const toggleFlip = () => {
@@ -127,6 +132,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
 
     onDeleteVocabulary(currentCard.id);
     setIsFlipped(false); // Reset flip state for the "next" card
+    setReviewInput('');
   };
 
   const canUseWebDav = webdavConfig?.enabled && webdavConfig.url && webdavConfig.username && webdavConfig.password;
@@ -300,13 +306,13 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
     const progress = ((reviewIndex + 1) / filteredVocabulary.length) * 100;
 
     return (
-      <div className="flex flex-col h-full items-center justify-center p-6 animate-fade-in relative">
+      <div className="flex flex-col h-full items-center justify-start p-4 sm:p-6 animate-fade-in relative overflow-y-auto">
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
           <div className="h-full bg-brand-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
         </div>
 
-        <div className="w-full max-w-2xl flex justify-between items-center mb-8 mt-4">
+        <div className="w-full max-w-2xl flex justify-between items-center mb-4 sm:mb-6 mt-2 sm:mt-4">
           <button onClick={exitReview} className="text-gray-500 hover:text-gray-800 flex items-center gap-2 text-sm font-medium">
             <ChevronLeft size={16} /> Back to List
           </button>
@@ -328,60 +334,73 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
 
         {/* Flashcard */}
         <div 
-          className="w-full max-w-xl min-h-[450px] perspective-1000 cursor-pointer group"
-          onClick={toggleFlip}
+          className="w-full max-w-xl min-h-[360px] sm:min-h-[430px] perspective-1000 group"
         >
           <div className={`relative w-full h-full transition-all duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
             
             {/* Front (Question) */}
             {!isFlipped && (
-              <div className="absolute inset-0 bg-white rounded-3xl shadow-xl border-2 border-gray-100 flex flex-col items-center justify-center p-10 text-center hover:border-brand-200 transition-colors overflow-y-auto">
-                 <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mb-4 flex-shrink-0">
-                    <span className="text-xl">🤔</span>
-                 </div>
-                 
-                 
-                 <p className="text-2xl text-gray-800 font-serif mb-2 underline decoration-red-400 decoration-wavy decoration-2 underline-offset-4 leading-relaxed">
+              <div className="absolute inset-0 bg-white rounded-3xl shadow-xl border-2 border-gray-100 flex flex-col items-center justify-center p-6 sm:p-10 text-center hover:border-brand-200 transition-colors overflow-y-auto">
+                 {/* Native meaning emphasized larger */}
+                 {currentCard.meaning && (
+                    <p className="text-2xl text-gray-800 font-serif mb-2 sm:mb-3 leading-relaxed">
+                      {currentCard.meaning}
+                    </p>
+                 )}
+
+                 {/* Original English a bit smaller */}
+                 <p className="text-base text-gray-700 font-serif mb-2 sm:mb-3 underline decoration-red-400 decoration-wavy decoration-2 underline-offset-4 leading-relaxed">
                    {currentCard.original}
                  </p>
-                 {/* NATIVE MEANING */}
-                 {currentCard.meaning && (
-                    <p className="text-sm text-gray-400 mb-6">{currentCard.meaning}</p>
-                 )}
                  
-                 <p className="mt-auto text-gray-300 text-xs font-medium">Click to flip</p>
+                 {/* User input area */}
+                 <textarea
+                   value={reviewInput}
+                   onChange={(e) => setReviewInput(e.target.value)}
+                   placeholder="Type your own sentence or notes here..."
+                   className="mt-4 w-full min-h-[80px] rounded-2xl border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-400 resize-none"
+                 />
               </div>
             )}
 
             {/* Back (Answer) */}
             {isFlipped && (
-              <div className="absolute inset-0 bg-brand-600 rounded-3xl shadow-xl flex flex-col items-center justify-center p-10 text-center text-white overflow-y-auto">
-                 <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-6 flex-shrink-0">
-                    <CheckCircle2 size={32} className="text-white" />
-                 </div>
-                 
-                 <p className="text-3xl font-serif font-medium leading-snug">
+              <div className="absolute inset-0 bg-brand-600 rounded-3xl shadow-xl flex flex-col items-center justify-start p-6 sm:p-10 text-center text-white">
+                 <p className="text-xl sm:text-2xl font-serif font-medium leading-snug mb-3">
                    {currentCard.better}
                  </p>
-                 
-                 {/* Explanation / Hint moved to back and fully shown */}
-                 <div className="mt-8 p-5 bg-white/10 rounded-xl border border-white/20 text-left w-full">
-                    <p className="text-brand-100 text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                        <Lightbulb size={14} /> Explanation
-                    </p>
-                    <p className="text-white text-sm leading-relaxed font-medium opacity-95">
-                        {currentCard.reason}
-                    </p>
+
+                 {/* Scrollable content area for user's answer + explanation */}
+                 <div className="mt-2 sm:mt-4 w-full max-w-lg text-left max-h-[260px] sm:max-h-[320px] overflow-y-auto space-y-4">
+                   {/* User's input echo */}
+                   {reviewInput && (
+                     <div className="w-full">
+                       <p className="text-[11px] uppercase tracking-wide text-brand-100 mb-1 font-semibold">Your answer</p>
+                       <p className="text-sm text-brand-50 bg-white/10 rounded-2xl px-3 py-2 leading-relaxed break-words">
+                         {reviewInput}
+                       </p>
+                     </div>
+                   )}
+                   
+                   {/* Explanation / Hint moved to back and fully shown */}
+                   <div className="p-5 bg-white/10 rounded-xl border border-white/20 w-full">
+                      <p className="text-brand-100 text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                          <Lightbulb size={14} /> Explanation
+                      </p>
+                      <p className="text-white text-sm leading-relaxed font-medium opacity-95">
+                          {currentCard.reason}
+                      </p>
+                   </div>
                  </div>
 
-                 <p className="mt-auto pt-6 text-brand-200 text-xs font-medium">Click for next card</p>
+                 <p className="mt-4 sm:mt-6 text-brand-200 text-xs font-medium">Click for next card</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-6 mt-10">
+        <div className="flex items-center gap-4 sm:gap-6 mt-6 sm:mt-8 mb-2 sm:mb-0">
           <button 
             onClick={(e) => { e.stopPropagation(); prevCard(); }}
             className="p-4 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-brand-600 transition-colors shadow-sm"
@@ -426,13 +445,6 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                 </button>
                 <h3 className="text-lg sm:text-xl font-bold text-gray-900">My Library</h3>
                 <div className="flex bg-white rounded-lg p-0.5 sm:p-1 border border-gray-200 shadow-sm">
-                  <button
-                    onClick={() => setActiveTab('history')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2
-                      ${activeTab === 'history' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                  >
-                    <HistoryIcon size={16} /> H
-                  </button>
                   <button
                     onClick={() => setActiveTab('vocabulary')}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2
@@ -527,59 +539,6 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             renderReviewMode()
           ) : (
             <div className="p-4 sm:p-6">
-              {/* History Tab */}
-              {activeTab === 'history' && (
-                <div className="space-y-4">
-                  {filteredHistory.length === 0 ? (
-                    <div className="text-center py-12 sm:py-20 text-gray-400">
-                      <HistoryIcon size={48} className="mx-auto mb-3 opacity-20" />
-                      <p>No history records found.</p>
-                    </div>
-                  ) : (
-                    filteredHistory.map(item => (
-                      <div key={item.id} className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group">
-                        <div className="flex justify-between items-start mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-lg font-bold px-2 py-0.5 rounded ${
-                                item.score >= 90 ? 'bg-green-100 text-green-700' :
-                                item.score >= 70 ? 'bg-blue-100 text-blue-700' :
-                                'bg-orange-100 text-orange-700'
-                            }`}>
-                                {item.score}
-                            </span>
-                            <span className="text-xs text-gray-400 flex items-center gap-1">
-                              <Calendar size={12} /> {formatDate(item.timestamp)}
-                            </span>
-                          </div>
-                          <button 
-                            onClick={() => onDeleteHistory(item.id)}
-                            className="text-gray-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-all"
-                            title="Delete record"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                        
-                        <div className="grid md:grid-cols-2 gap-3 sm:gap-4 mb-3">
-                          <div className="p-2.5 sm:p-3 bg-gray-50 rounded-lg border border-gray-100">
-                            <p className="text-xs font-semibold text-gray-500 mb-1 uppercase">Original</p>
-                            <p className="text-sm text-gray-800 line-clamp-2 font-serif">{item.sourceText}</p>
-                          </div>
-                          <div className="p-2.5 sm:p-3 bg-brand-50/50 rounded-lg border border-brand-100/50">
-                            <p className="text-xs font-semibold text-brand-600 mb-1 uppercase">Your Version</p>
-                            <p className="text-sm text-gray-800 line-clamp-2 font-serif">{item.userBackTranslation}</p>
-                          </div>
-                        </div>
-                        
-                        <p className="text-sm text-gray-600 italic border-t border-gray-100 pt-3 mt-3">
-                          "{item.summary}"
-                        </p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-
               {/* Vocabulary Tab */}
               {activeTab === 'vocabulary' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
