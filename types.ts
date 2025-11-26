@@ -56,4 +56,12 @@ export interface AIConfig {
   customModelName?: string;
   provider?: 'gemini' | 'openai'; 
   customAnalysisPrompt?: string; // New field for custom prompt
+  webdav?: WebDavConfig;
+}
+
+export interface WebDavConfig {
+  enabled: boolean;
+  url: string;
+  username: string;
+  password: string;
 }

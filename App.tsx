@@ -31,7 +31,8 @@ import {
   CheckCircle2,
   XCircle,
   Zap,
-  FileEdit
+  FileEdit,
+  ToggleLeft
 } from 'lucide-react';
 
 const LANGUAGES = [
@@ -70,7 +71,13 @@ const DEFAULT_CONFIG: AIConfig = {
   customApiKey: '',
   customModelName: 'gemini-2.5-flash',
   provider: 'gemini',
-  customAnalysisPrompt: ''
+  customAnalysisPrompt: '',
+  webdav: {
+    enabled: false,
+    url: '',
+    username: '',
+    password: ''
+  }
 };
 
 const App: React.FC = () => {
@@ -91,7 +98,7 @@ const App: React.FC = () => {
   // Settings State
   const [showSettings, setShowSettings] = useState(false);
   const [aiConfig, setAiConfig] = useState<AIConfig>(DEFAULT_CONFIG);
-  const [settingsTab, setSettingsTab] = useState<'preset' | 'custom' | 'prompts'>('preset');
+  const [settingsTab, setSettingsTab] = useState<'preset' | 'custom' | 'prompts' | 'sync'>('preset');
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
 
   // Library State
@@ -411,6 +418,15 @@ const App: React.FC = () => {
             >
               <FileEdit size={16} /> Prompts
             </button>
+            <button 
+               onClick={() => setSettingsTab('sync')}
+               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2
+                ${settingsTab === 'sync' 
+                  ? 'bg-white text-brand-700 shadow-sm ring-1 ring-black/5' 
+                  : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <LinkIcon size={16} /> Sync
+            </button>
           </div>
           
           <div className="p-6 overflow-y-auto flex-grow">
@@ -586,6 +602,81 @@ const App: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {settingsTab === 'sync' && (
+              <div className="space-y-4">
+                <p className="text-xs text-gray-500">
+                  Configure WebDAV to sync your history and vocabulary across devices.
+                </p>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <ToggleLeft size={16} className="text-gray-400" />
+                    Enable WebDAV Sync
+                  </label>
+                  <button
+                    onClick={() => setAiConfig(prev => ({
+                      ...prev,
+                      webdav: {
+                        ...(prev.webdav || { enabled: false, url: '', username: '', password: '' }),
+                        enabled: !prev.webdav?.enabled
+                      }
+                    }))}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors
+                      ${aiConfig.webdav?.enabled ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}
+                  >
+                    {aiConfig.webdav?.enabled ? 'Enabled' : 'Disabled'}
+                  </button>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">WebDAV File URL</label>
+                  <input
+                    type="text"
+                    value={aiConfig.webdav?.url || ''}
+                    onChange={(e) => setAiConfig(prev => ({
+                      ...prev,
+                      webdav: {
+                        ...(prev.webdav || { enabled: false, url: '', username: '', password: '' }),
+                        url: e.target.value
+                      }
+                    }))}
+                    placeholder="https://your-webdav-server.com/path/to/echoloop.json"
+                    className="w-full p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                    <input
+                      type="text"
+                      value={aiConfig.webdav?.username || ''}
+                      onChange={(e) => setAiConfig(prev => ({
+                        ...prev,
+                        webdav: {
+                          ...(prev.webdav || { enabled: false, url: '', username: '', password: '' }),
+                          username: e.target.value
+                        }
+                      }))}
+                      className="w-full p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input
+                      type="password"
+                      value={aiConfig.webdav?.password || ''}
+                      onChange={(e) => setAiConfig(prev => ({
+                        ...prev,
+                        webdav: {
+                          ...(prev.webdav || { enabled: false, url: '', username: '', password: '' }),
+                          password: e.target.value
+                        }
+                      }))}
+                      className="w-full p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
@@ -742,7 +833,7 @@ const App: React.FC = () => {
                 )}
             </div>
             <div className="flex-grow text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Feedback Summary</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Results Summary</h2>
                 <p className="text-gray-600 leading-relaxed mb-4">{analysis.summary}</p>
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                 {analysis.strengths.map((str, i) => (
@@ -885,6 +976,7 @@ const App: React.FC = () => {
          onDeleteHistory={deleteHistory}
          onDeleteVocabulary={deleteVocabulary}
          onImportData={handleImportData}
+         webdavConfig={aiConfig.webdav}
       />
       
       <main className="px-6 pb-12">

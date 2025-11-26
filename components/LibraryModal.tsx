@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Trash2, BookOpen, History as HistoryIcon, Search, ArrowUpRight, Calendar, PlayCircle, RotateCw, ChevronLeft, ChevronRight, CheckCircle2, Lightbulb, Download, Upload } from 'lucide-react';
-import { HistoryItem, VocabularyItem } from '../types';
+import { X, Trash2, BookOpen, History as HistoryIcon, Search, ArrowUpRight, Calendar, PlayCircle, RotateCw, ChevronLeft, ChevronRight, CheckCircle2, Lightbulb, Download, Upload, CloudUpload, CloudDownload } from 'lucide-react';
+import { HistoryItem, VocabularyItem, WebDavConfig } from '../types';
 
 interface LibraryModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface LibraryModalProps {
   onDeleteHistory: (id: string) => void;
   onDeleteVocabulary: (id: string) => void;
   onImportData?: (history: HistoryItem[], vocabulary: VocabularyItem[]) => void;
+  webdavConfig?: WebDavConfig;
 }
 
 const LibraryModal: React.FC<LibraryModalProps> = ({
@@ -20,7 +21,8 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   vocabulary,
   onDeleteHistory,
   onDeleteVocabulary,
-  onImportData
+  onImportData,
+  webdavConfig
 }) => {
   const [activeTab, setActiveTab] = useState<'history' | 'vocabulary'>('history');
   const [searchTerm, setSearchTerm] = useState('');
@@ -127,7 +129,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
     setIsFlipped(false); // Reset flip state for the "next" card
   };
 
-  // Export / Import Handlers
+  const canUseWebDav = webdavConfig?.enabled && webdavConfig.url && webdavConfig.username && webdavConfig.password;
+
+  // Export / Import Handlers - local file backup
   const handleExport = () => {
     const data = {
       history,
@@ -179,6 +183,93 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
       if (fileInputRef.current) fileInputRef.current.value = '';
     };
     reader.readAsText(file);
+  };
+
+  const handleSyncUpload = async () => {
+    if (!canUseWebDav || !webdavConfig) {
+      alert('WebDAV is not fully configured. Please check settings.');
+      return;
+    }
+
+    try {
+      const payload = {
+        action: 'push',
+        webdav: {
+          url: webdavConfig.url,
+          username: webdavConfig.username,
+          password: webdavConfig.password
+        },
+        data: {
+          history,
+          vocabulary,
+          exportDate: new Date().toISOString(),
+          version: '1.0'
+        }
+      };
+
+      const response = await fetch('/api/webdav-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'WebDAV upload failed');
+      }
+      alert('Synced to WebDAV successfully.');
+    } catch (err) {
+      console.error('WebDAV upload error:', err);
+      alert('Failed to sync to WebDAV. Please check your settings and network.');
+    }
+  };
+
+  const handleSyncDownload = async () => {
+    if (!canUseWebDav || !webdavConfig) {
+      alert('WebDAV is not fully configured. Please check settings.');
+      return;
+    }
+
+    try {
+      const payload = {
+        action: 'pull',
+        webdav: {
+          url: webdavConfig.url,
+          username: webdavConfig.username,
+          password: webdavConfig.password
+        }
+      };
+
+      const response = await fetch('/api/webdav-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'WebDAV download failed');
+      }
+
+      const json = await response.json();
+      const data = json.data;
+
+      if (data && data.history && Array.isArray(data.history) && data.vocabulary && Array.isArray(data.vocabulary)) {
+        if (onImportData) {
+          onImportData(data.history, data.vocabulary);
+        }
+        alert('Synced from WebDAV successfully.');
+      } else {
+        alert('Invalid WebDAV file format.');
+      }
+    } catch (err) {
+      console.error('WebDAV download error:', err);
+      alert('Failed to sync from WebDAV. Please check your settings and network.');
+    }
   };
 
   const renderReviewMode = () => {
@@ -319,50 +410,79 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[85vh] sm:h-[85vh] flex flex-col overflow-hidden">
         
         {/* Header - Only show standard header if not in review mode */}
         {!isReviewMode && (
           <>
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50">
-              <div className="flex items-center gap-4">
-                <h3 className="text-xl font-bold text-gray-900">My Library</h3>
-                <div className="flex bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 bg-gray-50">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <button 
+                  onClick={onClose}
+                  className="mr-1 sm:mr-2 flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">My Library</h3>
+                <div className="flex bg-white rounded-lg p-0.5 sm:p-1 border border-gray-200 shadow-sm">
                   <button
                     onClick={() => setActiveTab('history')}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2
                       ${activeTab === 'history' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                   >
-                    <HistoryIcon size={16} /> History
+                    <HistoryIcon size={16} /> H
                   </button>
                   <button
                     onClick={() => setActiveTab('vocabulary')}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2
                       ${activeTab === 'vocabulary' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                   >
-                    <BookOpen size={16} /> Vocabulary
+                    <BookOpen size={16} /> V
                   </button>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                  {/* Export / Import Buttons */}
-                  <button 
-                    onClick={handleExport}
-                    className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-2 rounded-lg transition-colors flex items-center gap-1"
-                    title="Download Backup"
-                  >
-                    <Download size={18} />
-                    <span className="hidden sm:inline text-xs font-medium">Export</span>
-                  </button>
-                  <button 
-                    onClick={handleImportClick}
-                    className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-2 rounded-lg transition-colors flex items-center gap-1"
-                    title="Import Backup"
-                  >
-                    <Upload size={18} />
-                    <span className="hidden sm:inline text-xs font-medium">Import</span>
-                  </button>
+              <div className="flex items-center gap-1 sm:gap-2">
+                  {/* WebDAV Sync Buttons (fallback to local backup when disabled) */}
+                  {canUseWebDav ? (
+                    <>
+                      <button 
+                        onClick={handleSyncDownload}
+                        className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
+                        title="Sync from WebDAV"
+                      >
+                        <CloudDownload size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">Pull</span>
+                      </button>
+                      <button 
+                        onClick={handleSyncUpload}
+                        className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
+                        title="Sync to WebDAV"
+                      >
+                        <CloudUpload size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">Push</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        onClick={handleExport}
+                        className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
+                        title="Download Backup"
+                      >
+                        <Download size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">Export</span>
+                      </button>
+                      <button 
+                        onClick={handleImportClick}
+                        className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
+                        title="Import Backup"
+                      >
+                        <Upload size={18} />
+                        <span className="hidden sm:inline text-xs font-medium">Import</span>
+                      </button>
+                    </>
+                  )}
                   <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -370,20 +490,11 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                     accept=".json" 
                     onChange={handleFileChange}
                   />
-
-                  <div className="h-6 w-px bg-gray-200 mx-1"></div>
-                  
-                  <button 
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
               </div>
             </div>
 
             {/* Search & Actions Bar */}
-            <div className="p-4 border-b border-gray-100 bg-white flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="px-4 py-3 sm:p-4 border-b border-gray-100 bg-white flex flex-col md:flex-row gap-3 sm:gap-4 items-center justify-between">
               <div className="relative w-full md:w-auto flex-grow max-w-md">
                 <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input 
@@ -391,14 +502,14 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                   placeholder={`Search ${activeTab}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-400 transition-all text-sm"
+                  className="w-full pl-10 pr-3 sm:pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-400 transition-all text-sm"
                 />
               </div>
               
               {activeTab === 'vocabulary' && filteredVocabulary.length > 0 && (
                 <button 
                   onClick={startReview}
-                  className="w-full md:w-auto px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-md shadow-brand-100"
+                  className="w-full md:w-auto px-4 sm:px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-md shadow-brand-100"
                 >
                   <PlayCircle size={16} />
                   Start Review
@@ -415,18 +526,18 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
           {isReviewMode ? (
             renderReviewMode()
           ) : (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {/* History Tab */}
               {activeTab === 'history' && (
                 <div className="space-y-4">
                   {filteredHistory.length === 0 ? (
-                    <div className="text-center py-20 text-gray-400">
+                    <div className="text-center py-12 sm:py-20 text-gray-400">
                       <HistoryIcon size={48} className="mx-auto mb-3 opacity-20" />
                       <p>No history records found.</p>
                     </div>
                   ) : (
                     filteredHistory.map(item => (
-                      <div key={item.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group">
+                      <div key={item.id} className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group">
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex items-center gap-2">
                             <span className={`text-lg font-bold px-2 py-0.5 rounded ${
@@ -449,12 +560,12 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                           </button>
                         </div>
                         
-                        <div className="grid md:grid-cols-2 gap-4 mb-3">
-                          <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <div className="grid md:grid-cols-2 gap-3 sm:gap-4 mb-3">
+                          <div className="p-2.5 sm:p-3 bg-gray-50 rounded-lg border border-gray-100">
                             <p className="text-xs font-semibold text-gray-500 mb-1 uppercase">Original</p>
                             <p className="text-sm text-gray-800 line-clamp-2 font-serif">{item.sourceText}</p>
                           </div>
-                          <div className="p-3 bg-brand-50/50 rounded-lg border border-brand-100/50">
+                          <div className="p-2.5 sm:p-3 bg-brand-50/50 rounded-lg border border-brand-100/50">
                             <p className="text-xs font-semibold text-brand-600 mb-1 uppercase">Your Version</p>
                             <p className="text-sm text-gray-800 line-clamp-2 font-serif">{item.userBackTranslation}</p>
                           </div>
@@ -471,16 +582,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
 
               {/* Vocabulary Tab */}
               {activeTab === 'vocabulary' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   {filteredVocabulary.length === 0 ? (
-                    <div className="col-span-full text-center py-20 text-gray-400">
+                    <div className="col-span-full text-center py-12 sm:py-20 text-gray-400">
                       <BookOpen size={48} className="mx-auto mb-3 opacity-20" />
                       <p>No vocabulary saved yet.</p>
                       <p className="text-sm mt-2">Save improvements from your practice results to see them here.</p>
                     </div>
                   ) : (
                     filteredVocabulary.map(item => (
-                      <div key={item.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group relative">
+                      <div key={item.id} className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group relative">
                         <button 
                             onClick={() => onDeleteVocabulary(item.id)}
                             className="absolute top-3 right-3 text-gray-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-all"

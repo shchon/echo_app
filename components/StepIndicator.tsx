@@ -11,7 +11,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
   const steps = [
     { id: AppStep.INPUT_SOURCE, label: 'Source', icon: BookOpen },
     { id: AppStep.PRACTICE_BACK_TRANSLATION, label: 'Practice', icon: PenTool },
-    { id: AppStep.RESULTS, label: 'Feedback', icon: BarChart3 },
+    { id: AppStep.RESULTS, label: 'Results', icon: BarChart3 },
   ];
 
   const getStepStatus = (stepId: AppStep, index: number) => {
