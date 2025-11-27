@@ -192,6 +192,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   };
 
   const handleSyncUpload = async () => {
+    const confirmed = window.confirm('警告：是否上传到 WebDAV？');
+    if (!confirmed) return;
+
     if (!canUseWebDav || !webdavConfig) {
       alert('WebDAV is not fully configured. Please check settings.');
       return;
@@ -233,6 +236,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   };
 
   const handleSyncDownload = async () => {
+    const confirmed = window.confirm('警告：覆盖本地数据？');
+    if (!confirmed) return;
+
     if (!canUseWebDav || !webdavConfig) {
       alert('WebDAV is not fully configured. Please check settings.');
       return;
@@ -461,7 +467,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       <button 
                         onClick={handleSyncDownload}
                         className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
-                        title="Sync from WebDAV"
+                        title="从 WebDAV 拉取（Pull）——云端数据将覆盖当前本地数据"
                       >
                         <CloudDownload size={18} />
                         <span className="hidden sm:inline text-xs font-medium">Pull</span>
@@ -469,7 +475,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       <button 
                         onClick={handleSyncUpload}
                         className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
-                        title="Sync to WebDAV"
+                        title="推送到 WebDAV（Push）——当前本地数据将覆盖云端文件"
                       >
                         <CloudUpload size={18} />
                         <span className="hidden sm:inline text-xs font-medium">Push</span>
