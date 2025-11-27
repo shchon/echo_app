@@ -349,13 +349,13 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               <div className="absolute inset-0 bg-white rounded-3xl shadow-xl border-2 border-gray-100 flex flex-col items-center justify-center p-6 sm:p-10 text-center hover:border-brand-200 transition-colors overflow-y-auto">
                  {/* Native meaning same size as English */}
                  {currentCard.meaning && (
-                    <p className="text-base text-gray-800 font-serif mb-2 sm:mb-3 leading-relaxed">
+                    <p className="text-[0.8rem] text-gray-800 font-serif mb-2 sm:mb-3 leading-relaxed">
                       {currentCard.meaning}
                     </p>
                  )}
 
                  {/* Original English */}
-                 <p className="text-base text-gray-700 font-serif mb-2 sm:mb-3 underline decoration-red-400 decoration-wavy decoration-2 underline-offset-4 leading-relaxed">
+                 <p className="text-[0.5rem] sm:text-xs text-gray-700 font-serif mb-2 sm:mb-3 underline decoration-red-400 decoration-wavy decoration-2 underline-offset-4 leading-relaxed">
                   {currentCard.original}
                  </p>
                  
@@ -364,7 +364,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                    value={reviewInput}
                    onChange={(e) => setReviewInput(e.target.value)}
                    placeholder="Type your own sentence or notes here..."
-                   className="mt-4 w-full min-h-[80px] rounded-2xl border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-400 resize-none"
+                   className="mt-4 w-full min-h-[80px] rounded-2xl border border-gray-200 px-3 py-2 text-[0.5rem] sm:text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-100 focus:border-brand-400 resize-none"
                  />
               </div>
             )}
@@ -372,7 +372,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             {/* Back (Answer) */}
             {isFlipped && (
               <div className="absolute inset-0 bg-brand-600 rounded-3xl shadow-xl flex flex-col items-center justify-start p-6 sm:p-10 text-center text-white">
-                 <p className="text-xl sm:text-2xl font-serif font-medium leading-snug mb-3">
+                 <p className="text-sm sm:text-base font-serif font-medium leading-snug mb-3">
                    {currentCard.better}
                  </p>
 
@@ -382,7 +382,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                    {reviewInput && (
                      <div className="w-full">
                        <p className="text-[11px] uppercase tracking-wide text-brand-100 mb-1 font-semibold">Your answer</p>
-                       <p className="text-sm text-brand-50 bg-white/10 rounded-2xl px-3 py-2 leading-relaxed break-words">
+                       <p className="text-xs text-brand-50 bg-white/10 rounded-2xl px-3 py-2 leading-relaxed break-words">
                          {reviewInput}
                        </p>
                      </div>
