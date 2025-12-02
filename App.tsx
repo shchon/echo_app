@@ -32,7 +32,8 @@ import {
   XCircle,
   Zap,
   FileEdit,
-  ToggleLeft
+  ToggleLeft,
+  Search
 } from 'lucide-react';
 
 const LANGUAGES = [
@@ -926,17 +927,13 @@ const App: React.FC = () => {
           <button
             onClick={handleAnalyzeCurrentSentence}
             disabled={isAnalyzingSentence || !sentenceBackTranslations[currentSentenceIndex]?.trim()}
-            className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 shadow-md shadow-brand-100"
+            className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-full text-xs transition-all flex items-center justify-center shadow-md shadow-brand-100"
+            title="Analyze this sentence"
           >
             {isAnalyzingSentence ? (
-              <>
-                <Loader2 size={18} className="animate-spin" /> Analyzing...
-              </>
+              <Loader2 size={14} className="animate-spin" />
             ) : (
-              <>
-                Analyze This Sentence
-                <Sparkles size={18} />
-              </>
+              <Search size={14} />
             )}
           </button>
         </div>
