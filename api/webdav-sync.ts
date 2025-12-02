@@ -1,5 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-
 interface WebDavConfig {
   url: string;
   username: string;
@@ -12,14 +10,13 @@ interface SyncRequestBody {
   data?: any;
 }
 
-export default async function handler(req: IncomingMessage & { method?: string; body?: any }, res: ServerResponse & { status?: (code: number) => any; json?: (body: any) => any }) {
+export default async function handler(req: any, res: any) {
   const method = req.method || 'GET';
 
   if (method !== 'POST') {
-    // Fallback for plain Node response objects
-    (res as any).statusCode = 405;
-    (res as any).setHeader?.('Content-Type', 'application/json');
-    (res as any).end?.(JSON.stringify({ error: 'Method not allowed' }));
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
     return;
   }
 

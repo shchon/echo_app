@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Trash2, BookOpen, History as HistoryIcon, Search, ArrowUpRight, Calendar, PlayCircle, RotateCw, ChevronLeft, ChevronRight, CheckCircle2, Lightbulb, Download, Upload, CloudUpload, CloudDownload } from 'lucide-react';
-import { HistoryItem, VocabularyItem, WebDavConfig } from '../types';
+import { HistoryItem, VocabularyItem, WebDavConfig, PracticeSession } from '../types';
 
 interface LibraryModalProps {
   isOpen: boolean;
@@ -11,6 +11,8 @@ interface LibraryModalProps {
   onDeleteHistory: (id: string) => void;
   onDeleteVocabulary: (id: string) => void;
   onImportData?: (history: HistoryItem[], vocabulary: VocabularyItem[]) => void;
+  currentSession?: PracticeSession;
+  onImportSession?: (session: PracticeSession | null) => void;
   webdavConfig?: WebDavConfig;
 }
 
@@ -22,6 +24,8 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   onDeleteHistory,
   onDeleteVocabulary,
   onImportData,
+  currentSession,
+  onImportSession,
   webdavConfig
 }) => {
   const [activeTab, setActiveTab] = useState<'history' | 'vocabulary'>('vocabulary');
@@ -146,6 +150,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
     const data = {
       history,
       vocabulary,
+      currentSession: currentSession || null,
       exportDate: new Date().toISOString(),
       version: '1.0'
     };
@@ -206,8 +211,11 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
         if (data.history && Array.isArray(data.history) && data.vocabulary && Array.isArray(data.vocabulary)) {
           if (onImportData) {
             onImportData(data.history, data.vocabulary);
-            alert('Backup imported successfully!');
           }
+          if (onImportSession && 'currentSession' in data) {
+            onImportSession(data.currentSession || null);
+          }
+          alert('Backup imported successfully!');
         } else {
           alert('Invalid file format. Please select a valid EchoLoop backup file.');
         }
@@ -241,6 +249,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
         data: {
           history,
           vocabulary,
+          currentSession: currentSession || null,
           exportDate: new Date().toISOString(),
           version: '1.0'
         }
@@ -255,8 +264,12 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'WebDAV upload failed');
+        let message = 'WebDAV upload failed';
+        try {
+          const errJson = await response.json();
+          if (errJson && errJson.error) message = errJson.error;
+        } catch {}
+        throw new Error(message);
       }
       alert('Synced to WebDAV successfully.');
     } catch (err) {
@@ -293,8 +306,12 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'WebDAV download failed');
+        let message = 'WebDAV download failed';
+        try {
+          const errJson = await response.json();
+          if (errJson && errJson.error) message = errJson.error;
+        } catch {}
+        throw new Error(message);
       }
 
       const json = await response.json();
@@ -303,6 +320,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
       if (data && data.history && Array.isArray(data.history) && data.vocabulary && Array.isArray(data.vocabulary)) {
         if (onImportData) {
           onImportData(data.history, data.vocabulary);
+        }
+        if (onImportSession && 'currentSession' in data) {
+          onImportSession(data.currentSession || null);
         }
         alert('Synced from WebDAV successfully.');
       } else {

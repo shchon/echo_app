@@ -15,6 +15,18 @@ export interface AnalysisResult {
   improvements: Improvement[];
 }
 
+export interface PracticeSession {
+  sourceText: string;
+  nativeLanguage: string;
+  translatedText: string;
+  sentencePairs: { id: string; original: string; translated: string }[];
+  currentSentenceIndex: number;
+  sentenceBackTranslations: string[];
+  sentenceAnalyses: (AnalysisResult | null)[];
+  step: AppStep;
+  timestamp: number;
+}
+
 export enum AppStep {
   INPUT_SOURCE = 'INPUT_SOURCE',
   TRANSLATING_TO_TARGET = 'TRANSLATING_TO_TARGET',

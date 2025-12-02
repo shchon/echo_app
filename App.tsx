@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { AppStep, AnalysisResult, HistoryItem, VocabularyItem, Improvement, AIConfig } from './types';
+import { AppStep, AnalysisResult, HistoryItem, VocabularyItem, Improvement, AIConfig, PracticeSession } from './types';
 import { generateTargetTranslation, analyzeBackTranslation, generatePracticeContent, testConnection, DEFAULT_ANALYSIS_PROMPT } from './services/geminiService';
 import StepIndicator from './components/StepIndicator';
 import CoachChat from './components/CoachChat';
@@ -88,6 +88,11 @@ const App: React.FC = () => {
   const [translatedText, setTranslatedText] = useState('');
   const [backTranslation, setBackTranslation] = useState('');
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [sentencePairs, setSentencePairs] = useState<{ id: string; original: string; translated: string }[]>([]);
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [sentenceBackTranslations, setSentenceBackTranslations] = useState<string[]>([]);
+  const [sentenceAnalyses, setSentenceAnalyses] = useState<(AnalysisResult | null)[]>([]);
+  const [isAnalyzingSentence, setIsAnalyzingSentence] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Generator State
@@ -130,7 +135,7 @@ const App: React.FC = () => {
   // Refs for auto-scrolling
   const topRef = useRef<HTMLDivElement>(null);
 
-  // Load Config from LocalStorage (Config is less sensitive to race conditions, but moved to effect for clarity)
+  // Load Config and last practice session from LocalStorage on mount
   useEffect(() => {
     const savedConfig = localStorage.getItem('echoLoopConfig');
     if (savedConfig) {
@@ -142,6 +147,25 @@ const App: React.FC = () => {
         if (parsed.useCustom) setSettingsTab('custom');
       } catch (e) {
         console.error("Failed to parse saved config", e);
+      }
+    }
+
+    const savedSession = localStorage.getItem('echoLoopSession');
+    if (savedSession) {
+      try {
+        const session: PracticeSession = JSON.parse(savedSession);
+        if (session && session.sentencePairs && session.sentencePairs.length > 0) {
+          setSourceText(session.sourceText || '');
+          setNativeLanguage(session.nativeLanguage || LANGUAGES[0].id);
+          setTranslatedText(session.translatedText || '');
+          setSentencePairs(session.sentencePairs || []);
+          setCurrentSentenceIndex(session.currentSentenceIndex || 0);
+          setSentenceBackTranslations(session.sentenceBackTranslations || []);
+          setSentenceAnalyses(session.sentenceAnalyses || []);
+          setStep(session.step || AppStep.PRACTICE_BACK_TRANSLATION);
+        }
+      } catch (e) {
+        console.error('Failed to parse saved practice session', e);
       }
     }
     
@@ -161,11 +185,60 @@ const App: React.FC = () => {
     localStorage.setItem('echoLoopConfig', JSON.stringify(aiConfig));
   }, [aiConfig]);
 
+  // Persist current practice session whenever relevant state changes
+  useEffect(() => {
+    if (sentencePairs.length === 0) {
+      localStorage.removeItem('echoLoopSession');
+      return;
+    }
+
+    const session: PracticeSession = {
+      sourceText,
+      nativeLanguage,
+      translatedText,
+      sentencePairs,
+      currentSentenceIndex,
+      sentenceBackTranslations,
+      sentenceAnalyses,
+      step,
+      timestamp: Date.now(),
+    };
+
+    try {
+      localStorage.setItem('echoLoopSession', JSON.stringify(session));
+    } catch (e) {
+      console.error('Failed to save practice session', e);
+    }
+  }, [
+    sourceText,
+    nativeLanguage,
+    translatedText,
+    sentencePairs,
+    currentSentenceIndex,
+    sentenceBackTranslations,
+    sentenceAnalyses,
+    step,
+  ]);
+
   const scrollToTop = () => {
     topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // --- Data Handlers ---
+
+  const splitEnglishSentences = (text: string): string[] => {
+    return text
+      .split(/(?<=[.!?])\s*/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  };
+
+  const splitChineseSentences = (text: string): string[] => {
+    return text
+      .split(/(?<=[。！？])/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  };
 
   const addToHistory = (result: AnalysisResult) => {
     const newItem: HistoryItem = {
@@ -244,6 +317,22 @@ const App: React.FC = () => {
     try {
       const translation = await generateTargetTranslation(sourceText, nativeLanguage, aiConfig);
       setTranslatedText(translation);
+
+      const originalSentences = splitEnglishSentences(sourceText);
+      const translatedSentences = splitChineseSentences(translation);
+      const pairCount = Math.min(originalSentences.length, translatedSentences.length);
+
+      const pairs = Array.from({ length: pairCount }).map((_, idx) => ({
+        id: `${Date.now()}-${idx}`,
+        original: originalSentences[idx],
+        translated: translatedSentences[idx]
+      }));
+
+      setSentencePairs(pairs);
+      setCurrentSentenceIndex(0);
+      setSentenceBackTranslations(Array(pairCount).fill(''));
+      setSentenceAnalyses(Array(pairCount).fill(null));
+
       setStep(AppStep.PRACTICE_BACK_TRANSLATION);
     } catch (e) {
       setError("Failed to generate translation. Please check your configuration and connection.");
@@ -265,19 +354,30 @@ const App: React.FC = () => {
   };
 
   const handleSubmitBackTranslation = async () => {
+    // Legacy handler kept for compatibility but not used in sentence-by-sentence flow
     if (!backTranslation.trim()) return;
+  };
+
+  const handleAnalyzeCurrentSentence = async () => {
+    if (!sentencePairs.length) return;
+    const currentPair = sentencePairs[currentSentenceIndex];
+    const currentBack = sentenceBackTranslations[currentSentenceIndex] || '';
+    if (!currentBack.trim()) return;
+
     setError(null);
-    setStep(AppStep.ANALYZING);
+    setIsAnalyzingSentence(true);
     try {
-      const result = await analyzeBackTranslation(sourceText, backTranslation, nativeLanguage, aiConfig);
-      setAnalysis(result);
-      addToHistory(result);
-      setStep(AppStep.RESULTS);
+      const result = await analyzeBackTranslation(currentPair.original, currentBack, nativeLanguage, aiConfig);
+      setSentenceAnalyses(prev => {
+        const next = [...prev];
+        next[currentSentenceIndex] = result;
+        return next;
+      });
       setRecentlySavedVocab([]);
-      scrollToTop();
     } catch (e) {
-      setError("Failed to analyze your translation. Check your configuration.");
-      setStep(AppStep.PRACTICE_BACK_TRANSLATION);
+      setError("Failed to analyze this sentence. Check your configuration.");
+    } finally {
+      setIsAnalyzingSentence(false);
     }
   };
 
@@ -287,7 +387,11 @@ const App: React.FC = () => {
     setTranslatedText('');
     setBackTranslation('');
     setAnalysis(null);
+    setSentencePairs([]);
+    setSentenceBackTranslations([]);
+    setSentenceAnalyses([]);
     setError(null);
+    localStorage.removeItem('echoLoopSession');
     scrollToTop();
   };
 
@@ -758,7 +862,14 @@ const App: React.FC = () => {
     </div>
   );
 
-  const renderPractice = () => (
+  const renderPractice = () => {
+    const currentAnalysis = sentenceAnalyses[currentSentenceIndex];
+    const improvements = currentAnalysis?.improvements || [];
+    const hasImprovements = improvements.length > 0;
+    const baseImprovement = hasImprovements ? improvements[0] : null;
+    const isSaved = baseImprovement ? recentlySavedVocab.includes(baseImprovement.betterAlternative) : false;
+
+    return (
     <div className="max-w-4xl mx-auto animate-fade-in flex flex-col gap-6">
       {/* Target Language Card */}
       <div className="bg-indigo-50 rounded-2xl border border-indigo-100 p-8 relative overflow-hidden">
@@ -768,11 +879,13 @@ const App: React.FC = () => {
         <div className="relative z-10">
           <h3 className="text-indigo-900 font-semibold text-xs mb-3 uppercase tracking-wider flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-            Translate back to English
+            Translate back to English (Sentence {sentencePairs.length ? currentSentenceIndex + 1 : 0} / {sentencePairs.length})
           </h3>
-          <p className="text-xs sm:text-sm font-serif text-indigo-950 leading-relaxed">
-            {translatedText}
-          </p>
+          {sentencePairs.length > 0 && (
+            <p className="text-xs sm:text-sm font-serif text-indigo-950 leading-relaxed">
+              {sentencePairs[currentSentenceIndex].translated}
+            </p>
+          )}
         </div>
       </div>
 
@@ -780,27 +893,99 @@ const App: React.FC = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
         <label className="block text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
           <PenToolIcon />
-          Your English Translation
+          Your English Translation (This sentence)
         </label>
         <textarea
-          className="w-full h-48 p-4 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none resize-none text-lg font-serif leading-relaxed transition-all"
-          placeholder="Type your English translation here..."
-          value={backTranslation}
-          onChange={(e) => setBackTranslation(e.target.value)}
+          className="w-full h-32 p-4 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none resize-none text-lg font-serif leading-relaxed transition-all"
+          placeholder="Type your English translation for this sentence..."
+          value={sentenceBackTranslations[currentSentenceIndex] || ''}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSentenceBackTranslations(prev => {
+              const next = [...prev];
+              next[currentSentenceIndex] = value;
+              return next;
+            });
+          }}
         />
-        <div className="mt-6 flex justify-end">
+
+        <div className="mt-4 flex flex-wrap gap-3 justify-between items-center">
+          <div className="flex gap-2">
+            <button
+              onClick={() => currentSentenceIndex > 0 && setCurrentSentenceIndex(prev => prev - 1)}
+              disabled={currentSentenceIndex === 0}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+            >
+              <ChevronRight size={16} className="transform rotate-180" /> Prev
+            </button>
+            <button
+              onClick={() => currentSentenceIndex < sentencePairs.length - 1 && setCurrentSentenceIndex(prev => prev + 1)}
+              disabled={currentSentenceIndex >= sentencePairs.length - 1}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+            >
+              Next <ChevronRight size={16} />
+            </button>
+          </div>
+
           <button
-            onClick={handleSubmitBackTranslation}
-            disabled={!backTranslation.trim()}
-            className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-8 py-3 rounded-xl font-medium transition-all flex items-center gap-2 shadow-md shadow-brand-100"
+            onClick={handleAnalyzeCurrentSentence}
+            disabled={isAnalyzingSentence || !sentenceBackTranslations[currentSentenceIndex]?.trim()}
+            className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 shadow-md shadow-brand-100"
           >
-            Analyze My Translation
-            <Sparkles size={18} />
+            {isAnalyzingSentence ? (
+              <>
+                <Loader2 size={18} className="animate-spin" /> Analyzing...
+              </>
+            ) : (
+              <>
+                Analyze This Sentence
+                <Sparkles size={18} />
+              </>
+            )}
           </button>
         </div>
+
+        {currentAnalysis && (
+          <div className="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+              <AlertCircle className="text-orange-500" size={16} />
+              Key Improvements for this sentence
+            </h4>
+            {!hasImprovements ? (
+              <p className="text-sm text-green-700">Great job! No major improvements found for this sentence.</p>
+            ) : (
+              <div className="space-y-3">
+                <div className="bg-white border border-gray-200 rounded-lg p-3">
+                  <div className="flex justify-between items-start gap-2 mb-1">
+                    <p className="flex-1 text-sm text-gray-800 underline decoration-red-500 decoration-wavy decoration-2 underline-offset-4">{baseImprovement?.userVersion}</p>
+                    {baseImprovement && (
+                      <button
+                        onClick={() => !isSaved && addToVocabulary(baseImprovement)}
+                        disabled={isSaved}
+                        className={`p-1 rounded-md transition-colors flex-shrink-0 ml-2 ${isSaved ? 'text-brand-600' : 'text-gray-400 hover:text-brand-600 hover:bg-brand-100'}`}
+                        title="Save to Vocabulary"
+                      >
+                        {isSaved ? <BookmarkCheck size={18} /> : <Bookmark size={18} />}
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-900 bg-green-100 inline-block px-2 py-0.5 rounded mb-2">{baseImprovement?.betterAlternative}</p>
+                  <div className="mt-1 space-y-1">
+                    {improvements.map((imp, idx) => (
+                      <p key={idx} className="text-xs text-gray-600">
+                        <span className="font-semibold text-gray-800">Why {improvements.length > 1 ? idx + 1 : ''}:</span> {imp.reason}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
+  };
 
   const renderLoading = (message: string) => (
     <div className="max-w-md mx-auto text-center py-20 animate-pulse">
@@ -973,6 +1158,34 @@ const App: React.FC = () => {
          onDeleteHistory={deleteHistory}
          onDeleteVocabulary={deleteVocabulary}
          onImportData={handleImportData}
+         currentSession={sentencePairs.length ? {
+           sourceText,
+           nativeLanguage,
+           translatedText,
+           sentencePairs,
+           currentSentenceIndex,
+           sentenceBackTranslations,
+           sentenceAnalyses,
+           step,
+           timestamp: Date.now(),
+         } : undefined}
+         onImportSession={(session) => {
+           if (!session) return;
+           setSourceText(session.sourceText || '');
+           setNativeLanguage(session.nativeLanguage || LANGUAGES[0].id);
+           setTranslatedText(session.translatedText || '');
+           setSentencePairs(session.sentencePairs || []);
+           setCurrentSentenceIndex(session.currentSentenceIndex || 0);
+           setSentenceBackTranslations(session.sentenceBackTranslations || []);
+           setSentenceAnalyses(session.sentenceAnalyses || []);
+           setStep(session.step || AppStep.PRACTICE_BACK_TRANSLATION);
+
+           try {
+             localStorage.setItem('echoLoopSession', JSON.stringify(session));
+           } catch (e) {
+             console.error('Failed to save imported practice session', e);
+           }
+         }}
          webdavConfig={aiConfig.webdav}
       />
       
