@@ -137,6 +137,10 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
 
   const canUseWebDav = webdavConfig?.enabled && webdavConfig.url && webdavConfig.username && webdavConfig.password;
 
+  const sanitizeForTsv = (text: string) => {
+    return text.replace(/\s+/g, ' ').trim();
+  };
+
   // Export / Import Handlers - local file backup
   const handleExport = () => {
     const data = {
@@ -152,6 +156,32 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
     const link = document.createElement('a');
     link.href = url;
     link.download = `echoloop_backup_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportAnki = () => {
+    if (!vocabulary || vocabulary.length === 0) {
+      alert('No vocabulary to export.');
+      return;
+    }
+
+    const rows = vocabulary.map((item) => {
+      const front = sanitizeForTsv(item.meaning || item.original || '');
+      const better = sanitizeForTsv(item.better || '');
+      const reason = sanitizeForTsv(item.reason || '');
+      return `${front}\t${better}\t${reason}`;
+    });
+
+    const content = rows.join('\n');
+    const blob = new Blob([content], { type: 'text/tab-separated-values;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `echoloop_vocabulary_anki_${new Date().toISOString().slice(0,10)}.tsv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -463,7 +493,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               <div className="flex items-center gap-1 sm:gap-2">
                   {/* WebDAV Sync Buttons (fallback to local backup when disabled) */}
                   {canUseWebDav ? (
-                    <>
+                  <>
                       <button 
                         onClick={handleSyncDownload}
                         className="text-gray-500 hover:text-brand-600 hover:bg-brand-50 p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-1"
@@ -501,6 +531,14 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       </button>
                     </>
                   )}
+                  <button 
+                    onClick={handleExportAnki}
+                    className="ml-1 text-gray-600 hover:text-brand-700 hover:bg-brand-50 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors flex items-center gap-1 border border-transparent hover:border-brand-100"
+                    title="Export vocabulary to Anki (TSV)"
+                  >
+                    <BookOpen size={16} />
+                    <span className="hidden sm:inline text-xs font-medium">Anki</span>
+                  </button>
                   <input 
                     type="file" 
                     ref={fileInputRef} 
