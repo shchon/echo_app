@@ -1,8 +1,18 @@
 {
   "version": 2,
   "builds": [
-    { "src": "vite.config.*", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
-    { "src": "api/webdav-sync.ts", "use": "@vercel/node" }
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist",
+        "buildCommand": "npm run build"
+      }
+    },
+    {
+      "src": "api/webdav-sync.ts",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
     { "src": "/api/webdav-sync", "dest": "api/webdav-sync.ts" },
