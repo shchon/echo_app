@@ -890,13 +890,9 @@ const App: React.FC = () => {
       </div>
 
       {/* User Input Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-        <label className="block text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <PenToolIcon />
-          Your English Translation (This sentence)
-        </label>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
         <textarea
-          className="w-full h-32 p-4 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none resize-none text-lg font-serif leading-relaxed transition-all"
+          className="w-full h-28 p-3 rounded-xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none resize-none text-sm font-serif leading-relaxed transition-all"
           placeholder="Type your English translation for this sentence..."
           value={sentenceBackTranslations[currentSentenceIndex] || ''}
           onChange={(e) => {
@@ -909,7 +905,7 @@ const App: React.FC = () => {
           }}
         />
 
-        <div className="mt-4 flex flex-wrap gap-3 justify-between items-center">
+        <div className="mt-3 flex flex-wrap gap-3 justify-between items-center">
           <div className="flex gap-2">
             <button
               onClick={() => currentSentenceIndex > 0 && setCurrentSentenceIndex(prev => prev - 1)}
@@ -946,11 +942,7 @@ const App: React.FC = () => {
         </div>
 
         {currentAnalysis && (
-          <div className="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-            <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-              <AlertCircle className="text-orange-500" size={16} />
-              Key Improvements for this sentence
-            </h4>
+          <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-3 space-y-3">
             {!hasImprovements ? (
               <p className="text-sm text-green-700">Great job! No major improvements found for this sentence.</p>
             ) : (
