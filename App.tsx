@@ -35,7 +35,8 @@ import {
   ToggleLeft,
   Search,
   CloudUpload,
-  CloudDownload
+  CloudDownload,
+  PlusCircle
 } from 'lucide-react';
 
 const LANGUAGES = [
@@ -452,13 +453,54 @@ const App: React.FC = () => {
       setTranslatedText(translation);
 
       const originalSentences = splitEnglishSentences(sourceText);
-      const translatedSentences = splitChineseSentences(translation);
-      const pairCount = Math.min(originalSentences.length, translatedSentences.length);
+      const rawChineseSegments = splitChineseSentences(translation);
+
+      // Adapt Chinese segments to the English sentence list instead of splitting
+      // both sides independently and truncating. We always take English as the
+      // main timeline and redistribute the Chinese segments to match its length.
+      let chinesePerEnglish: string[] = [];
+
+      if (originalSentences.length === 0) {
+        chinesePerEnglish = [];
+      } else if (rawChineseSegments.length === 0) {
+        // No punctuation-based split available on the Chinese side: show full
+        // translation for every English sentence so the user still has context.
+        chinesePerEnglish = Array(originalSentences.length).fill(translation);
+      } else if (rawChineseSegments.length === originalSentences.length) {
+        // Perfect 1:1 match.
+        chinesePerEnglish = rawChineseSegments;
+      } else if (rawChineseSegments.length > originalSentences.length) {
+        // More Chinese segments than English sentences: evenly group adjacent
+        // Chinese segments so we end up with exactly N English-aligned chunks.
+        const nE = originalSentences.length;
+        const nC = rawChineseSegments.length;
+        let start = 0;
+        chinesePerEnglish = [];
+        for (let i = 0; i < nE; i++) {
+          const remainingE = nE - i;
+          const remainingC = nC - start;
+          // Roughly distribute remaining Chinese segments over remaining English.
+          let take = Math.max(1, Math.round(remainingC / remainingE));
+          if (start + take > nC || i === nE - 1) {
+            take = remainingC;
+          }
+          const chunk = rawChineseSegments.slice(start, start + take).join('');
+          chinesePerEnglish.push(chunk);
+          start += take;
+        }
+      } else {
+        // Fewer Chinese segments than English sentences: we keep alignment simple
+        // by showing the full Chinese translation for each English sentence.
+        // This avoids misleading the user with over-aggressive splitting.
+        chinesePerEnglish = Array(originalSentences.length).fill(translation);
+      }
+
+      const pairCount = originalSentences.length;
 
       const pairs = Array.from({ length: pairCount }).map((_, idx) => ({
         id: `${Date.now()}-${idx}`,
         original: originalSentences[idx],
-        translated: translatedSentences[idx]
+        translated: chinesePerEnglish[idx] || ''
       }));
 
       setSentencePairs(pairs);
@@ -526,6 +568,12 @@ const App: React.FC = () => {
     setError(null);
     localStorage.removeItem('echoLoopSession');
     scrollToTop();
+  };
+
+  const handleRestartPractice = () => {
+    const confirmed = window.confirm('Return to the start and input a new English passage? This will clear the current exercise.');
+    if (!confirmed) return;
+    handleReset();
   };
 
   const handleTryAgainSameText = () => {
@@ -1059,6 +1107,14 @@ const App: React.FC = () => {
               className="px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
             >
               Next <ChevronRight size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={handleRestartPractice}
+              className="ml-2 px-3 py-2 rounded-lg border border-red-200 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:border-red-400 flex items-center gap-1 shadow-sm"
+            >
+              <PlusCircle size={14} />
+              新
             </button>
           </div>
 
