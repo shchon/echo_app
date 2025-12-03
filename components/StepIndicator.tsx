@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppStep } from '../types';
-import { CheckCircle2, Circle, PenTool, BookOpen, BarChart3 } from 'lucide-react';
+import { CheckCircle2, PenTool, BookOpen } from 'lucide-react';
 
 interface StepIndicatorProps {
   currentStep: AppStep;
@@ -11,7 +11,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
   const steps = [
     { id: AppStep.INPUT_SOURCE, label: 'Source', icon: BookOpen },
     { id: AppStep.PRACTICE_BACK_TRANSLATION, label: 'Practice', icon: PenTool },
-    { id: AppStep.RESULTS, label: 'Results', icon: BarChart3 },
   ];
 
   const getStepStatus = (stepId: AppStep, index: number) => {
@@ -38,8 +37,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
     } else if (visualIndex === 1) {
        isActive = currentStep === AppStep.PRACTICE_BACK_TRANSLATION || currentStep === AppStep.ANALYZING;
        isCompleted = effectiveCurrentIndex > 3;
-    } else {
-       isActive = currentStep === AppStep.RESULTS;
     }
 
     return { isActive, isCompleted };

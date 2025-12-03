@@ -33,7 +33,9 @@ import {
   Zap,
   FileEdit,
   ToggleLeft,
-  Search
+  Search,
+  CloudUpload,
+  CloudDownload
 } from 'lucide-react';
 
 const LANGUAGES = [
@@ -135,6 +137,12 @@ const App: React.FC = () => {
 
   // Refs for auto-scrolling
   const topRef = useRef<HTMLDivElement>(null);
+
+  const canUseWebDav =
+    !!aiConfig.webdav?.enabled &&
+    !!aiConfig.webdav?.url &&
+    !!aiConfig.webdav?.username &&
+    !!aiConfig.webdav?.password;
 
   // Load Config and last practice session from LocalStorage on mount
   useEffect(() => {
@@ -309,6 +317,130 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSyncUpload = async () => {
+    const confirmed = window.confirm('警告：是否上传到 WebDAV？');
+    if (!confirmed) return;
+
+    if (!canUseWebDav || !aiConfig.webdav) {
+      alert('WebDAV is not fully configured. Please check settings.');
+      return;
+    }
+
+    try {
+      const payload = {
+        action: 'push',
+        webdav: {
+          url: aiConfig.webdav.url,
+          username: aiConfig.webdav.username,
+          password: aiConfig.webdav.password,
+        },
+        data: {
+          history,
+          vocabulary,
+          currentSession: sentencePairs.length
+            ? {
+                sourceText,
+                nativeLanguage,
+                translatedText,
+                sentencePairs,
+                currentSentenceIndex,
+                sentenceBackTranslations,
+                sentenceAnalyses,
+                step,
+                timestamp: Date.now(),
+              }
+            : null,
+          exportDate: new Date().toISOString(),
+          version: '1.0',
+        },
+      };
+
+      const response = await fetch('/api/webdav-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        let message = 'WebDAV upload failed';
+        try {
+          const errJson = await response.json();
+          if (errJson && errJson.error) message = errJson.error;
+        } catch {}
+        throw new Error(message);
+      }
+      alert('Synced to WebDAV successfully.');
+    } catch (err) {
+      console.error('WebDAV upload error:', err);
+      alert('Failed to sync to WebDAV. Please check your settings and network.');
+    }
+  };
+
+  const handleSyncDownload = async () => {
+    const confirmed = window.confirm('警告：覆盖本地数据？');
+    if (!confirmed) return;
+
+    if (!canUseWebDav || !aiConfig.webdav) {
+      alert('WebDAV is not fully configured. Please check settings.');
+      return;
+    }
+
+    try {
+      const payload = {
+        action: 'pull',
+        webdav: {
+          url: aiConfig.webdav.url,
+          username: aiConfig.webdav.username,
+          password: aiConfig.webdav.password,
+        },
+      };
+
+      const response = await fetch('/api/webdav-sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        let message = 'WebDAV download failed';
+        try {
+          const errJson = await response.json();
+          if (errJson && errJson.error) message = errJson.error;
+        } catch {}
+        throw new Error(message);
+      }
+
+      const json = await response.json();
+      const data = json.data;
+
+      if (data && data.history && Array.isArray(data.history) && data.vocabulary && Array.isArray(data.vocabulary)) {
+        setHistory(data.history);
+        setVocabulary(data.vocabulary);
+        if (data.currentSession) {
+          const session: PracticeSession = data.currentSession;
+          setSourceText(session.sourceText || '');
+          setNativeLanguage(session.nativeLanguage || LANGUAGES[0].id);
+          setTranslatedText(session.translatedText || '');
+          setSentencePairs(session.sentencePairs || []);
+          setCurrentSentenceIndex(session.currentSentenceIndex || 0);
+          setSentenceBackTranslations(session.sentenceBackTranslations || []);
+          setSentenceAnalyses(session.sentenceAnalyses || []);
+          setStep(session.step || AppStep.PRACTICE_BACK_TRANSLATION);
+        }
+        alert('Synced from WebDAV successfully.');
+      } else {
+        alert('Invalid WebDAV file format.');
+      }
+    } catch (err) {
+      console.error('WebDAV download error:', err);
+      alert('Failed to sync from WebDAV. Please check your settings and network.');
+    }
+  };
+
   // --- Workflow Handlers ---
 
   const handleStartPractice = async () => {
@@ -418,7 +550,17 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-           {/* Native Language Selector in Header */}
+           {/* Native Language Selector in Header with WebDAV icons on both sides */}
+           {canUseWebDav && (
+             <button
+               onClick={handleSyncDownload}
+               className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors"
+               title="Sync from WebDAV (Pull)"
+             >
+               <CloudDownload size={18} />
+             </button>
+           )}
+
            <div className="relative group">
              <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 bg-gray-50 hover:bg-white hover:border-brand-300 transition-all cursor-pointer">
                 <Globe size={16} className="text-gray-500 group-hover:text-brand-500" />
@@ -438,8 +580,18 @@ const App: React.FC = () => {
              </div>
            </div>
 
+           {canUseWebDav && (
+             <button
+               onClick={handleSyncUpload}
+               className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors"
+               title="Sync to WebDAV (Push)"
+             >
+               <CloudUpload size={18} />
+             </button>
+           )}
+
            <div className="h-6 w-px bg-gray-200 mx-1"></div>
-           
+
            <button 
              onClick={() => setShowLibrary(true)}
              className="p-2 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors relative group"
