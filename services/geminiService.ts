@@ -130,27 +130,80 @@ export const testConnection = async (config: AIConfig): Promise<boolean> => {
 };
 
 export const generateTargetTranslation = async (
-  sourceText: string, 
+  sourceText: string,
   targetLanguage: string,
   config: AIConfig
-): Promise<string> => {
-  const prompt = `Translate the following English text into natural, high-quality ${targetLanguage}. Do not add any explanations, just provide the translation. Text: "${sourceText}"`;
+): Promise<{ fullTranslation: string; sentencePairs: { index: number; source: string; target: string }[] }> => {
+  // Basic sentence split for English; we keep this simple and let the model
+  // handle nuanced cases while still being aware of per-sentence structure.
+  const englishSentences = sourceText
+    .split(/(?<=[.!?])\s+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  const prompt = `You are a professional translator.
+
+Translate the following English sentences into natural, high-quality ${targetLanguage}.
+
+RULES:
+- Keep the sentence boundaries: for each English sentence, return exactly ONE corresponding ${targetLanguage} sentence.
+- Preserve the number and order of sentences. Do NOT merge or split sentences.
+- The translations should be suitable for a learner who will later translate them back into English.
+
+Return JSON ONLY with the following structure:
+{
+  "fullTranslation": string,              // all sentences joined into a smooth ${targetLanguage} paragraph
+  "sentencePairs": [
+    { "index": number, "source": string, "target": string }
+  ]
+}
+
+Here are the English sentences (with indices):
+
+${englishSentences.map((s, i) => `${i + 1}. ${s}`).join('\n')}
+`;
 
   try {
+    let jsonString = "";
+
     if (config.useCustom && config.provider === 'openai') {
-      return await callOpenAI(config, [{ role: 'user', content: prompt }]);
+      const textResponse = await callOpenAI(
+        config,
+        [{ role: 'user', content: prompt }],
+        'json_object'
+      );
+      jsonString = textResponse;
     } else {
       const ai = getGeminiClient(config);
       const modelName = getModelName(config);
       const response = await ai.models.generateContent({
         model: modelName,
         contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+        },
       });
-      return response.text || "Translation failed.";
+      jsonString = response.text || '{}';
     }
+
+    jsonString = jsonString.replace(/```json\n?|```/g, '').trim();
+    const parsed = JSON.parse(jsonString);
+
+    const fullTranslation: string = parsed.fullTranslation || '';
+    const rawPairs: any[] = Array.isArray(parsed.sentencePairs) ? parsed.sentencePairs : [];
+    const sentencePairs = rawPairs.map((p, idx) => ({
+      index: typeof p.index === 'number' ? p.index : idx + 1,
+      source: typeof p.source === 'string' ? p.source : englishSentences[idx] || '',
+      target: typeof p.target === 'string' ? p.target : '',
+    }));
+
+    return {
+      fullTranslation,
+      sentencePairs,
+    };
   } catch (error) {
-    console.error("Translation error:", error);
-    throw new Error("Failed to generate translation.");
+    console.error('Translation error:', error);
+    throw new Error('Failed to generate translation.');
   }
 };
 

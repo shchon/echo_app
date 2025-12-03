@@ -449,59 +449,20 @@ const App: React.FC = () => {
     setError(null);
     setStep(AppStep.TRANSLATING_TO_TARGET);
     try {
-      const translation = await generateTargetTranslation(sourceText, nativeLanguage, aiConfig);
-      setTranslatedText(translation);
+      const { fullTranslation, sentencePairs: modelSentencePairs } = await generateTargetTranslation(
+        sourceText,
+        nativeLanguage,
+        aiConfig
+      );
+      setTranslatedText(fullTranslation);
 
-      const originalSentences = splitEnglishSentences(sourceText);
-      const rawChineseSegments = splitChineseSentences(translation);
-
-      // Adapt Chinese segments to the English sentence list instead of splitting
-      // both sides independently and truncating. We always take English as the
-      // main timeline and redistribute the Chinese segments to match its length.
-      let chinesePerEnglish: string[] = [];
-
-      if (originalSentences.length === 0) {
-        chinesePerEnglish = [];
-      } else if (rawChineseSegments.length === 0) {
-        // No punctuation-based split available on the Chinese side: show full
-        // translation for every English sentence so the user still has context.
-        chinesePerEnglish = Array(originalSentences.length).fill(translation);
-      } else if (rawChineseSegments.length === originalSentences.length) {
-        // Perfect 1:1 match.
-        chinesePerEnglish = rawChineseSegments;
-      } else if (rawChineseSegments.length > originalSentences.length) {
-        // More Chinese segments than English sentences: evenly group adjacent
-        // Chinese segments so we end up with exactly N English-aligned chunks.
-        const nE = originalSentences.length;
-        const nC = rawChineseSegments.length;
-        let start = 0;
-        chinesePerEnglish = [];
-        for (let i = 0; i < nE; i++) {
-          const remainingE = nE - i;
-          const remainingC = nC - start;
-          // Roughly distribute remaining Chinese segments over remaining English.
-          let take = Math.max(1, Math.round(remainingC / remainingE));
-          if (start + take > nC || i === nE - 1) {
-            take = remainingC;
-          }
-          const chunk = rawChineseSegments.slice(start, start + take).join('');
-          chinesePerEnglish.push(chunk);
-          start += take;
-        }
-      } else {
-        // Fewer Chinese segments than English sentences: we keep alignment simple
-        // by showing the full Chinese translation for each English sentence.
-        // This avoids misleading the user with over-aggressive splitting.
-        chinesePerEnglish = Array(originalSentences.length).fill(translation);
-      }
-
-      const pairCount = originalSentences.length;
-
-      const pairs = Array.from({ length: pairCount }).map((_, idx) => ({
+      const pairs = (modelSentencePairs || []).map((p, idx) => ({
         id: `${Date.now()}-${idx}`,
-        original: originalSentences[idx],
-        translated: chinesePerEnglish[idx] || ''
+        original: p.source,
+        translated: p.target,
       }));
+
+      const pairCount = pairs.length;
 
       setSentencePairs(pairs);
       setCurrentSentenceIndex(0);
