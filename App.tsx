@@ -550,17 +550,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-           {/* Native Language Selector in Header with WebDAV icons on both sides */}
-           {canUseWebDav && (
-             <button
-               onClick={handleSyncDownload}
-               className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors"
-               title="Sync from WebDAV (Pull)"
-             >
-               <CloudDownload size={18} />
-             </button>
-           )}
-
+           {/* Native Language Selector in Header */}
            <div className="relative group">
              <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 bg-gray-50 hover:bg-white hover:border-brand-300 transition-all cursor-pointer">
                 <Globe size={16} className="text-gray-500 group-hover:text-brand-500" />
@@ -579,17 +569,6 @@ const App: React.FC = () => {
                 <ChevronRight size={14} className="absolute right-3 top-1/2 transform -translate-y-1/2 rotate-90 text-gray-400 pointer-events-none" />
              </div>
            </div>
-
-           {canUseWebDav && (
-             <button
-               onClick={handleSyncUpload}
-               className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors"
-               title="Sync to WebDAV (Push)"
-             >
-               <CloudUpload size={18} />
-             </button>
-           )}
-
            <div className="h-6 w-px bg-gray-200 mx-1"></div>
 
            <button 
@@ -1349,7 +1328,12 @@ const App: React.FC = () => {
       />
       
       <main className="px-4 sm:px-6 pb-20 sm:pb-12">
-        <StepIndicator currentStep={step} />
+        <StepIndicator 
+          currentStep={step} 
+          canSync={canUseWebDav} 
+          onSyncDownload={handleSyncDownload} 
+          onSyncUpload={handleSyncUpload} 
+        />
         
         {error && (
           <div className="max-w-2xl mx-auto mb-6 bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl flex items-center gap-3 animate-pulse">
