@@ -869,6 +869,13 @@ const App: React.FC = () => {
     const hasImprovements = improvements.length > 0;
     const baseImprovement = hasImprovements ? improvements[0] : null;
     const isSaved = baseImprovement ? recentlySavedVocab.includes(baseImprovement.betterAlternative) : false;
+    const allSentencesCompleted =
+      sentencePairs.length > 0 &&
+      sentencePairs.every((_, idx) => {
+        const back = (sentenceBackTranslations[idx] || '').trim();
+        const analysisDone = !!sentenceAnalyses[idx];
+        return back && analysisDone;
+      });
 
     return (
     <div className="max-w-4xl mx-auto animate-fade-in flex flex-col gap-6">
@@ -972,6 +979,17 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
+
+      {allSentencesCompleted && (
+        <div className="flex justify-center mt-2">
+          <button
+            onClick={handleReset}
+            className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm rounded-full shadow-md shadow-brand-100 transition-colors"
+          >
+            Finish this practice &amp; start a new one
+          </button>
+        </div>
+      )}
     </div>
   );
   };
